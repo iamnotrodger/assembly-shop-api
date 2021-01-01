@@ -31,4 +31,13 @@ export const validateParams = (schema: Schema): RequestHandler => {
     };
 };
 
+export const teamSchema = Joi.object().keys({
+    name: Joi.string().required(),
+});
+
+export const memberSchema = Joi.object().keys({
+    team_id: Joi.number().required(),
+    user_id: Joi.number().required(),
+});
+
 export default validateRequest;

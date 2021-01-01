@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import Team from '../../interface/Team';
 import User from '../../interface/User';
 import {
@@ -70,9 +71,12 @@ export const addMember = async (
         await insertMember(team_id, user_id);
 
         res.status(200).json({
-            message: `Ussr (${user_id}) has been added to Team (${team_id})`,
+            message: `User (${user_id}) has been added to Team (${team_id})`,
         });
     } catch (error) {
+        if (error instanceof InvalidRequestException)
+            error.message = `Unable to add User (${req.body.user_id}) to Team (${req.body.team_id}). This may be due to the User already being in the team or the User does not exist.`;
+
         next(error);
     }
 };

@@ -12,7 +12,7 @@ import NotFoundException from '../exceptions/NotFoundException';
 
 export const selectTeams = async (user_id: string | number) => {
     const queryString =
-        'SELECT team.team_id, administrator, name, created FROM team INNER JOIN team_member ON team.team_id = team_member=team.id WHERE user_id = $1;';
+        'SELECT team.team_id, administrator, name, created FROM team INNER JOIN team_member ON team.team_id = team_member.team_id WHERE user_id = $1;';
     const queryParams: any[] = [user_id];
 
     const { rows } = await query(queryString, queryParams);
@@ -27,7 +27,7 @@ export const selectTeams = async (user_id: string | number) => {
 
 export const selectTeamMembers = async (team_id: string) => {
     const queryString =
-        'SELECT usr.user_id, email, name, picture, given_name, family_name FROM team_member INNER JOIN usr ON team_member.user_id = usr.user_id WHERE team.team_id = $1;';
+        'SELECT usr.user_id, email, name, picture, given_name, family_name FROM team_member INNER JOIN usr ON team_member.user_id = usr.user_id WHERE team_id = $1;';
     const queryParams: any[] = [team_id];
 
     const { rows } = await query(queryString, queryParams);
@@ -66,12 +66,13 @@ export const insertMember = async (
 
 const insertTeam = async (client: PoolClient, team: Team) => {
     const queryString =
-        'INSERT INTO team (administrator, name) VALUES ($1, $2);';
+        'INSERT INTO team (administrator, name) VALUES ($1, $2) RETURNING team_id;';
     const queryParams: any[] = [team.administrator, team.name];
 
     const { rows } = await exec(client, queryString, queryParams);
+    const { team_id } = rows[0];
 
-    return rows[0] as number;
+    return team_id as number;
 };
 
 const insertAdminToTeam = async (client: PoolClient, team: Team) => {
