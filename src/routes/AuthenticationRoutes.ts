@@ -38,6 +38,4 @@ AuthenticationRoutes.post('/token/refresh-token', assignAccessToken);
 /** Request to clear refresh-token cookie */
 AuthenticationRoutes.post('/token/logout', deaunthenticateRefreshToken);
 
-AuthenticationRoutes.post('/isMember', authenticateToken, authenticateMember);
-
 export default AuthenticationRoutes;
