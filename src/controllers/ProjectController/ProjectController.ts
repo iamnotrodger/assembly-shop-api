@@ -4,6 +4,7 @@ import {
     deleteProject,
     insertProject,
     selectProjects,
+    updateProjectName,
 } from '../../models/ProjectModel';
 
 export const getProjects = async (
@@ -54,6 +55,24 @@ export const removeProject = async (
 
         res.status(200).json({
             message: 'Project Deleted',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const changeProjectName = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { project_id, name } = req.body;
+
+        await updateProjectName(project_id, name);
+
+        res.status(200).json({
+            message: `Updated Project name to ${name}`,
         });
     } catch (error) {
         next(error);

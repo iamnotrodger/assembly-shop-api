@@ -1,5 +1,4 @@
-import { PoolClient } from 'pg';
-import { exec, query } from '../config/postgresConfig';
+import { query } from '../config/postgresConfig';
 import InvalidRequestException from '../exceptions/InvalidRequestException';
 import Project from '../interface/Project';
 
@@ -24,6 +23,21 @@ export const insertProject = async (project: Project) => {
 export const deleteProject = async (project_id: string | number) => {
     const queryString = 'DELETE FROM project WHERE project_id = $1;';
     const queryParams: any[] = [project_id];
+
+    const { rowCount } = await query(queryString, queryParams);
+
+    if (rowCount === 0)
+        throw new InvalidRequestException(
+            `Invalid Request: Project (${project_id}) does not exist.`,
+        );
+};
+
+export const updateProjectName = async (
+    project_id: string | number,
+    name: string,
+) => {
+    const queryString = 'UPDATE project SET name = $2 WHERE project_id = $1;';
+    const queryParams: any[] = [project_id, name];
 
     const { rowCount } = await query(queryString, queryParams);
 
