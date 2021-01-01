@@ -67,7 +67,8 @@ export const addMember = async (
     next: NextFunction,
 ) => {
     try {
-        const { team_id, user_id } = req.body;
+        const { team_id } = req.params;
+        const { user_id } = req.body;
 
         await insertMember(team_id, user_id);
 
@@ -88,7 +89,7 @@ export const removeMember = async (
     next: NextFunction,
 ) => {
     try {
-        const { team_id, user_id } = req.body;
+        const { team_id, user_id } = req.params;
 
         await deleteMember(team_id, user_id);
 
