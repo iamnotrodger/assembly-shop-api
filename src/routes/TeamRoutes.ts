@@ -9,6 +9,7 @@ import {
     getTeamMembers,
     getTeams,
 } from '../controllers/TeamMember';
+import { removeMember } from '../controllers/TeamMember/TeamController';
 import validateRequest, {
     memberSchema,
     teamSchema,
@@ -28,6 +29,14 @@ TeamRoutes.post(
     authenticateAdmin,
     validateRequest(memberSchema),
     addMember,
+);
+
+TeamRoutes.post(
+    '/remove-member',
+    authenticateToken,
+    authenticateAdmin,
+    validateRequest(memberSchema),
+    removeMember,
 );
 
 export default TeamRoutes;

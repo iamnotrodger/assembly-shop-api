@@ -3,6 +3,7 @@ import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import Team from '../../interface/Team';
 import User from '../../interface/User';
 import {
+    deleteMember,
     insertMember,
     insertTeamAndJoin,
     selectTeamMembers,
@@ -75,8 +76,26 @@ export const addMember = async (
         });
     } catch (error) {
         if (error instanceof InvalidRequestException)
-            error.message = `Unable to add User (${req.body.user_id}) to Team (${req.body.team_id}). This may be due to the User already being in the team or the User does not exist.`;
+            error.message = `Unable to add User (${req.body.user_id}) to Team (${req.body.team_id}). This may be due to the User already being in the team or the User/Team does not exist.`;
 
+        next(error);
+    }
+};
+
+export const removeMember = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { team_id, user_id } = req.body;
+
+        await deleteMember(team_id, user_id);
+
+        res.status(200).json({
+            message: `User (${user_id}) has been removed to Team (${team_id})`,
+        });
+    } catch (error) {
         next(error);
     }
 };

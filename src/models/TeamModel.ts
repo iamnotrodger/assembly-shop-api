@@ -9,6 +9,7 @@ import {
     transaction,
 } from '../config/postgresConfig';
 import NotFoundException from '../exceptions/NotFoundException';
+import InvalidRequestException from '../exceptions/InvalidRequestException';
 
 export const selectTeams = async (user_id: string | number) => {
     const queryString =
@@ -62,6 +63,22 @@ export const insertMember = async (
     const queryParams: any[] = [team_id, user_id];
 
     await query(queryString, queryParams);
+};
+
+export const deleteMember = async (
+    team_id: string | number,
+    user_id: string | number,
+) => {
+    const queryString =
+        'DELETE FROM team_member WHERE team_id = $1 AND user_id = $2;';
+    const queryParams: any[] = [team_id, user_id];
+
+    const { rowCount } = await query(queryString, queryParams);
+
+    if (rowCount === 0)
+        throw new InvalidRequestException(
+            `Invalid Request: Team (${team_id}) does not exist or User (${user_id}) does not exist/is not a member of the Team.`,
+        );
 };
 
 const insertTeam = async (client: PoolClient, team: Team) => {
