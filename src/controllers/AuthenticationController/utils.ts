@@ -22,7 +22,9 @@ export const createAccessToken = (payload: Payload) => {
 };
 
 export const createRefreshToken = (payload: Payload) => {
-    return sign(payload, process.env.REFRESH_TOKEN_SECRET!);
+    return sign(payload, process.env.REFRESH_TOKEN_SECRET!, {
+        expiresIn: 60 * 60 * 24 * 365,
+    });
 };
 
 export const verifyAccessToken = (token: string) => {

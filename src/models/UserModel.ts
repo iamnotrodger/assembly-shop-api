@@ -5,7 +5,7 @@ import InvalidRequestException from '../exceptions/InvalidRequestException';
 
 export const insertUser = async (user: UserProfile) => {
     const queryString =
-        'INSERT INTO users (provider_id, provider, name, email, picture, given_name, family_name) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING user_id, joined;';
+        'INSERT INTO usr (provider_id, provider, name, email, picture, given_name, family_name) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING user_id, joined;';
     const queryParam: string[] = [
         user.id || '',
         user.provider || '',
@@ -27,7 +27,7 @@ export const insertUser = async (user: UserProfile) => {
 //Query for public information
 export const selectUser = async (user_id: string | number) => {
     const queryString =
-        'SELECT user_id, username, picture, email FROM users WHERE user_id = $1;';
+        'SELECT user_id, username, picture, email FROM usr WHERE user_id = $1;';
     const queryParam: any[] = [user_id];
 
     const { rows } = await query(queryString, queryParam);
@@ -43,7 +43,7 @@ export const selectUser = async (user_id: string | number) => {
 
 //Query for private information
 export const selectProfile = async (user_id: string | number) => {
-    const queryString = 'SELECT * FROM users WHERE user_id = $1;';
+    const queryString = 'SELECT * FROM usr WHERE user_id = $1;';
     const queryParam: any[] = [user_id];
 
     const { rows } = await query(queryString, queryParam);
@@ -57,7 +57,7 @@ export const selectProfile = async (user_id: string | number) => {
 
 //Query user by oAuth Provider
 export const selectUserByProvider = async (provider_id: string | number) => {
-    const queryString = 'SELECT * FROM users WHERE provider_id = $1;';
+    const queryString = 'SELECT * FROM usr WHERE provider_id = $1;';
     const queryParam: any[] = [provider_id];
 
     const { rows } = await query(queryString, queryParam);
@@ -65,7 +65,7 @@ export const selectUserByProvider = async (provider_id: string | number) => {
 };
 
 export const isUsernameValid = async (username: string) => {
-    const queryString = 'SELECT username FROM users WHERE username = $1;';
+    const queryString = 'SELECT username FROM usr WHERE username = $1;';
     const queryParam = [username];
     const { rows } = await query(queryString, queryParam);
 
@@ -77,7 +77,7 @@ export const updateUsername = async (
     user_id: string | number,
     username: string,
 ) => {
-    const queryString = 'UPDATE users SET username = ($1) WHERE user_id = $2;';
+    const queryString = 'UPDATE usr SET username = ($1) WHERE user_id = $2;';
     const queryParam: any[] = [username, user_id];
     const { rowCount } = await query(queryString, queryParam);
 

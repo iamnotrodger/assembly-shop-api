@@ -1,10 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import {
-    redisSetAsync,
-    redisGetAsync,
-    redisDelAsync,
-} from '../../config/redisConfig';
-import {
     createAccessToken,
     getTokenFromHeader,
     createRefreshToken,
@@ -47,12 +42,7 @@ export const assignRefreshToken = async (
         };
 
         //This scenario would only come up if a user signs in on multiples devices
-        let refreshToken = await redisGetAsync(user_id.toString());
-        if (!refreshToken) {
-            refreshToken = createRefreshToken(payload);
-            const yearInSec = 60 * 60 * 365;
-            await redisSetAsync(user_id.toString(), refreshToken, yearInSec);
-        }
+        const refreshToken = createRefreshToken(payload);
 
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
@@ -77,9 +67,7 @@ export const deaunthenticateRefreshToken = async (
             throw new NotAuthorizedException();
         }
 
-        const payload = verifyRefreshToken(refreshToken);
-        //Delete stored refresh-token
-        await redisDelAsync(payload.user_id.toString());
+        verifyRefreshToken(refreshToken);
 
         res.clearCookie('refresh_token');
         res.status(200).send('Token Unauthenticated');
@@ -101,12 +89,6 @@ export const assignAccessToken = async (
         }
 
         const refreshPayload = verifyRefreshToken(refreshToken);
-        const storedRefreshToken = await redisGetAsync(
-            refreshPayload.user_id.toString(),
-        );
-        if (!storedRefreshToken || storedRefreshToken !== refreshToken) {
-            throw new NotAuthorizedException(403, 'Invalid Refresh Token');
-        }
 
         //creates Payload object without Property exp and iat, since this will cause an error when used in JWT.sign
         const { exp, iat, ...payload } = refreshPayload;
