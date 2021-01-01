@@ -64,25 +64,32 @@ export const selectUserByProvider = async (provider_id: string | number) => {
     return rows[0] as User;
 };
 
-export const isUsernameValid = async (username: string) => {
-    const queryString = 'SELECT username FROM usr WHERE username = $1;';
-    const queryParam = [username];
-    const { rows } = await query(queryString, queryParam);
-
-    if (rows.length == 0) return true;
-    return false;
-};
-
-export const updateUsername = async (
+export const updateName = async (
     user_id: string | number,
-    username: string,
+    givenName: string,
+    familyName: string,
 ) => {
-    const queryString = 'UPDATE usr SET username = ($1) WHERE user_id = $2;';
-    const queryParam: any[] = [username, user_id];
+    const queryString =
+        'UPDATE usr SET given_name = ($1), family_name = ($2) WHERE user_id = $3;';
+    const queryParam: any[] = [givenName, familyName, user_id];
     const { rowCount } = await query(queryString, queryParam);
 
     if (rowCount === 0)
         throw new InvalidRequestException(
             `User does not exist with user ID: ${user_id}`,
         );
+};
+
+export const validateAdminByTeam = async (
+    user_id: string | number,
+    team_id: string | number,
+) => {
+    return true;
+};
+
+export const validateAdminByProject = async (
+    user_id: string | number,
+    team_id: string | number,
+) => {
+    return true;
 };

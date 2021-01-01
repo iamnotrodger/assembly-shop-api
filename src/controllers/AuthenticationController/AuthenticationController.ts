@@ -9,6 +9,10 @@ import {
 import User from '../../interface/User';
 import Payload from '../../interface/Payload';
 import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
+import {
+    validateAdminByProject,
+    validateAdminByTeam,
+} from '../../models/UserModel';
 
 // MIDDLEWARE. Checks and validate access-token sent it with the request. Store User in req.user for the next middleware
 export const authenticateToken = (
@@ -96,5 +100,32 @@ export const assignAccessToken = async (
         res.status(200).json({ accessToken });
     } catch (err) {
         next(err);
+    }
+};
+
+export const authenticateAdmin = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { user_id } = req.user as User;
+        const { team_id, project_id } = req.body;
+
+        const isValid =
+            team_id == null
+                ? await validateAdminByProject(user_id, project_id)
+                : await validateAdminByTeam(user_id, team_id);
+
+        if (isValid) {
+            next();
+        } else {
+            throw new NotAuthorizedException(
+                401,
+                'Not Authorized Administrator',
+            );
+        }
+    } catch (error) {
+        next(error);
     }
 };
