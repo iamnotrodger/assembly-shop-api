@@ -31,6 +31,8 @@ export const validateParams = (schema: Schema): RequestHandler => {
     };
 };
 
+//Team Schemas + Team Members
+
 export const teamSchema = Joi.object().keys({
     name: Joi.string().required(),
 });
@@ -38,6 +40,28 @@ export const teamSchema = Joi.object().keys({
 export const memberSchema = Joi.object().keys({
     team_id: Joi.number().required(),
     user_id: Joi.number().required(),
+});
+
+// Project Schemas
+
+export const getProjectSchema = Joi.object().keys({
+    team_id: Joi.number().required(),
+});
+
+export const postProjectSchema = Joi.object().keys({
+    team_id: Joi.number().required(),
+    name: Joi.string().required(),
+});
+
+export const deleteProjectSchema = Joi.object().keys({
+    project_id: Joi.number().required(),
+    team_id: Joi.number().required(),
+});
+
+export const updateProjectSchema = Joi.object().keys({
+    project_id: Joi.number().required(),
+    team_id: Joi.number().required(),
+    name: Joi.string().required(),
 });
 
 export default validateRequest;

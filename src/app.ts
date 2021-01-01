@@ -16,6 +16,7 @@ import './config/passportConfig';
 //Routes
 import AuthenticationRoutes from './routes/AuthenticationRoutes';
 import TeamRoutes from './routes/TeamRoutes';
+import ProjectRoutes from './routes/ProjectRoutes';
 
 //Create Express Server
 const app = express();
@@ -47,6 +48,7 @@ app.use(passport.initialize());
 //Routes
 app.use('/api/auth', AuthenticationRoutes);
 app.use('/api/team', TeamRoutes);
+app.use('/api/project', ProjectRoutes);
 
 //Error Handling
 app.use(notFound);
