@@ -45,9 +45,7 @@ export const assignRefreshToken = async (
             email,
         };
 
-        //This scenario would only come up if a user signs in on multiples devices
         const refreshToken = createRefreshToken(payload);
-
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
         });

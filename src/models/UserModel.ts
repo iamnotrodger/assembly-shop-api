@@ -84,12 +84,22 @@ export const validateAdminByTeam = async (
     user_id: string | number,
     team_id: string | number,
 ) => {
-    return true;
+    const queryString =
+        'SELECT FROM team WHERE administrator = $1 AND team_id = $2;';
+    const queryParam: any[] = [user_id, team_id];
+    const { rowCount } = await query(queryString, queryParam);
+
+    return rowCount > 0;
 };
 
 export const validateAdminByProject = async (
     user_id: string | number,
-    team_id: string | number,
+    project_id: string | number,
 ) => {
-    return true;
+    const queryString =
+        'SELECT FROM team INNER JOIN project on team.team_id = project.team_id WHERE administrator = $1 AND project_id = $2;';
+    const queryParam: any[] = [user_id, project_id];
+    const { rowCount } = await query(queryString, queryParam);
+
+    return rowCount > 0;
 };
