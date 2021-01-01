@@ -46,7 +46,7 @@ export const insertTeamAndJoin = async (team: Team) => {
 
     try {
         team.team_id = await insertTeam(client, team);
-        await insertAdminToTeam(client, team);
+        await insertMember(team.team_id, team.administrator, client);
         await commit(client);
     } catch (error) {
         await rollback(client);
@@ -57,12 +57,14 @@ export const insertTeamAndJoin = async (team: Team) => {
 export const insertMember = async (
     team_id: string | number,
     user_id: string | number,
+    client?: PoolClient,
 ) => {
     const queryString =
         'INSERT INTO team_member (team_id, user_id) VALUES ($1, $2);';
     const queryParams: any[] = [team_id, user_id];
 
-    await query(queryString, queryParams);
+    if (client) await exec(client, queryString, queryParams);
+    else await query(queryString, queryParams);
 };
 
 export const deleteMember = async (
@@ -90,12 +92,4 @@ const insertTeam = async (client: PoolClient, team: Team) => {
     const { team_id } = rows[0];
 
     return team_id as number;
-};
-
-const insertAdminToTeam = async (client: PoolClient, team: Team) => {
-    const queryString =
-        'INSERT INTO team_member (team_id, user_id) VALUES ($1, $2);';
-    const queryParams: any[] = [team.team_id, team.administrator];
-
-    await exec(client, queryString, queryParams);
 };
