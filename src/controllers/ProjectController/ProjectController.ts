@@ -13,7 +13,7 @@ export const getProjects = async (
     next: NextFunction,
 ) => {
     try {
-        const { team_id } = req.body;
+        const { team_id } = req.params;
         const projects = await selectProjects(team_id);
         res.status(200).json({
             projects,
@@ -32,7 +32,7 @@ export const createProject = async (
         const { team_id, name } = req.body;
         const project: Project = { team_id, name };
 
-        await insertProject(project);
+        project.project_id = await insertProject(project);
 
         res.status(200).json({
             message: 'Project Created',
@@ -49,7 +49,7 @@ export const removeProject = async (
     next: NextFunction,
 ) => {
     try {
-        const { project_id } = req.body;
+        const { project_id } = req.params;
 
         await deleteProject(project_id);
 
@@ -67,12 +67,13 @@ export const changeProjectName = async (
     next: NextFunction,
 ) => {
     try {
-        const { project_id, name } = req.body;
+        const { project_id } = req.params;
+        const { name } = req.body;
 
         await updateProjectName(project_id, name);
 
         res.status(200).json({
-            message: `Updated Project name to ${name}`,
+            message: `Updated Project (${project_id}) name to ${name}`,
         });
     } catch (error) {
         next(error);

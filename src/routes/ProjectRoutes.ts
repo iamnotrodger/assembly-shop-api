@@ -1,28 +1,31 @@
 import { Router } from 'express';
 import {
     authenticateAdmin,
-    authenticateMember,
+    authenticateAdminByParams,
+    authenticateMemberByParams,
     authenticateToken,
 } from '../controllers/AuthenticationController';
 import {
     changeProjectName,
+    createProject,
     getProjects,
     removeProject,
 } from '../controllers/ProjectController';
 import validateRequest, {
-    deleteProjectSchema,
     getProjectSchema,
     postProjectSchema,
+    projectSchema,
     updateProjectSchema,
+    validateParams,
 } from '../middleware/validateRequest';
 
 const ProjectRoutes = Router();
 
 ProjectRoutes.get(
-    '',
-    validateRequest(getProjectSchema),
+    '/:team_id',
+    validateParams(getProjectSchema),
     authenticateToken,
-    authenticateMember,
+    authenticateMemberByParams,
     getProjects,
 );
 
@@ -31,22 +34,23 @@ ProjectRoutes.post(
     validateRequest(postProjectSchema),
     authenticateToken,
     authenticateAdmin,
-    getProjects,
+    createProject,
 );
 
-ProjectRoutes.post(
-    '/delete',
-    validateRequest(deleteProjectSchema),
+ProjectRoutes.delete(
+    '/:team_id/:project_id',
+    validateParams(projectSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateAdminByParams,
     removeProject,
 );
 
 ProjectRoutes.put(
-    '/update-name',
+    '/:team_id/:project_id/update-name',
     validateRequest(updateProjectSchema),
+    validateParams(projectSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateAdminByParams,
     changeProjectName,
 );
 

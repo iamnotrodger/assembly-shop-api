@@ -4,5 +4,7 @@ export {
     assignRefreshToken,
     deaunthenticateRefreshToken,
     authenticateAdmin,
+    authenticateAdminByParams,
     authenticateMember,
+    authenticateMemberByParams,
 } from './AuthenticationController';

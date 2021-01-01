@@ -122,6 +122,30 @@ export const authenticateAdmin = async (
     }
 };
 
+export const authenticateAdminByParams = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { user_id } = req.user as User;
+        const { team_id } = req.params;
+
+        const isValid = await validateAdmin(user_id, team_id);
+
+        if (isValid) {
+            next();
+        } else {
+            throw new NotAuthorizedException(
+                401,
+                'Not Authorized Administrator',
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const authenticateMember = async (
     req: Request,
     res: Response,
@@ -134,8 +158,31 @@ export const authenticateMember = async (
         const isValid = await validateMember(user_id, team_id);
 
         if (isValid) {
-            // next();
-            res.status(200).send('yeah you a team member alright');
+            next();
+        } else {
+            throw new NotAuthorizedException(
+                401,
+                `Not Authorized Member of Team (${team_id})`,
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateMemberByParams = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { user_id } = req.user as User;
+        const { team_id } = req.params;
+
+        const isValid = await validateMember(user_id, team_id);
+
+        if (isValid) {
+            next();
         } else {
             throw new NotAuthorizedException(
                 401,
