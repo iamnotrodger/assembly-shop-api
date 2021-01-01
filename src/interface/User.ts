@@ -2,11 +2,14 @@ import { Profile } from 'passport';
 
 export default interface User {
     user_id: number;
-    username?: string;
     email: string;
 
-    followers?: number;
-    following?: number;
+    name?: string;
+
+    picture?: string;
+    giveName?: string;
+    familyName?: string;
+
     joined?: string;
 }
 

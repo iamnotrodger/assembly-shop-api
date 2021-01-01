@@ -10,13 +10,6 @@ services:
         ports:
             - '5432:5432'
 
-    # Redis
-    redis:
-        container_name: redis-assembly-shop
-        image: redis:latest
-        ports:
-            - '6379:6379'
-
     # Backend
     manual-mode-api:
         container_name: assembly-shop-api

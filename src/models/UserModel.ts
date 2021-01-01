@@ -27,7 +27,7 @@ export const insertUser = async (user: UserProfile) => {
 //Query for public information
 export const selectUser = async (user_id: string | number) => {
     const queryString =
-        'SELECT user_id, username, picture, email FROM usr WHERE user_id = $1;';
+        'SELECT email, name, picture, given_name, family_name FROM usr WHERE user_id = $1;';
     const queryParam: any[] = [user_id];
 
     const { rows } = await query(queryString, queryParam);
@@ -38,21 +38,16 @@ export const selectUser = async (user_id: string | number) => {
         );
     }
 
-    return rows[0] as User;
-};
+    const user: User = {
+        user_id: user_id as number,
+        email: rows[0].email,
+        name: rows[0].name,
+        picture: rows[0].picture,
+        giveName: rows[0].given_name,
+        familyName: rows[0].family_name,
+    };
 
-//Query for private information
-export const selectProfile = async (user_id: string | number) => {
-    const queryString = 'SELECT * FROM usr WHERE user_id = $1;';
-    const queryParam: any[] = [user_id];
-
-    const { rows } = await query(queryString, queryParam);
-    if (rows.length == 0) {
-        throw new NotFoundException(
-            `No User was found with this user-id: ${user_id}`,
-        );
-    }
-    return rows[0] as UserProfile;
+    return user;
 };
 
 //Query user by oAuth Provider
@@ -80,7 +75,7 @@ export const updateName = async (
         );
 };
 
-export const validateAdminByTeam = async (
+export const validateAdmin = async (
     user_id: string | number,
     team_id: string | number,
 ) => {
@@ -92,13 +87,13 @@ export const validateAdminByTeam = async (
     return rowCount > 0;
 };
 
-export const validateAdminByProject = async (
+export const validateMember = async (
     user_id: string | number,
-    project_id: string | number,
+    team_id: string | number,
 ) => {
     const queryString =
-        'SELECT FROM team INNER JOIN project on team.team_id = project.team_id WHERE administrator = $1 AND project_id = $2;';
-    const queryParam: any[] = [user_id, project_id];
+        'SELECT FROM team INNER JOIN team_member ON team.team_id = team_member.team_id WHERE user_id = $1 AND team_member.team_id = $2';
+    const queryParam: any[] = [user_id, team_id];
     const { rowCount } = await query(queryString, queryParam);
 
     return rowCount > 0;

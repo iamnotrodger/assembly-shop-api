@@ -4,7 +4,9 @@ import {
     assignRefreshToken,
     assignAccessToken,
     deaunthenticateRefreshToken,
+    authenticateToken,
 } from '../controllers/AuthenticationController';
+import { authenticateMember } from '../controllers/AuthenticationController/AuthenticationController';
 
 const AuthenticationRoutes = Router();
 
@@ -35,5 +37,7 @@ AuthenticationRoutes.post('/token/refresh-token', assignAccessToken);
 
 /** Request to clear refresh-token cookie */
 AuthenticationRoutes.post('/token/logout', deaunthenticateRefreshToken);
+
+AuthenticationRoutes.post('/isMember', authenticateToken, authenticateMember);
 
 export default AuthenticationRoutes;

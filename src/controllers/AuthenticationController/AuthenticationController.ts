@@ -9,10 +9,7 @@ import {
 import User from '../../interface/User';
 import Payload from '../../interface/Payload';
 import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
-import {
-    validateAdminByProject,
-    validateAdminByTeam,
-} from '../../models/UserModel';
+import { validateAdmin, validateMember } from '../../models/UserModel';
 
 // MIDDLEWARE. Checks and validate access-token sent it with the request. Store User in req.user for the next middleware
 export const authenticateToken = (
@@ -108,12 +105,9 @@ export const authenticateAdmin = async (
 ) => {
     try {
         const { user_id } = req.user as User;
-        const { team_id, project_id } = req.body;
+        const { team_id } = req.body;
 
-        const isValid =
-            team_id == null
-                ? await validateAdminByProject(user_id, project_id)
-                : await validateAdminByTeam(user_id, team_id);
+        const isValid = await validateAdmin(user_id, team_id);
 
         if (isValid) {
             next();
@@ -121,6 +115,31 @@ export const authenticateAdmin = async (
             throw new NotAuthorizedException(
                 401,
                 'Not Authorized Administrator',
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateMember = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { user_id } = req.user as User;
+        const { team_id } = req.body;
+
+        const isValid = await validateMember(user_id, team_id);
+
+        if (isValid) {
+            // next();
+            res.status(200).send('yeah you a team member alright');
+        } else {
+            throw new NotAuthorizedException(
+                401,
+                `Not Authorized Member of Team (${team_id})`,
             );
         }
     } catch (error) {
