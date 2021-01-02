@@ -54,6 +54,33 @@ export const insertTeamAndJoin = async (team: Team) => {
     }
 };
 
+export const updateTeamName = async (
+    team_id: string | number,
+    name: string,
+) => {
+    const queryString = 'UPDATE team SET name = $2 WHERE team_id = $1;';
+    const queryParams: any[] = [team_id, name];
+
+    const { rowCount } = await query(queryString, queryParams);
+
+    if (rowCount === 0)
+        throw new InvalidRequestException(
+            `Invalid Request: Unable to update Team's name, Team (${team_id}) does not exist.`,
+        );
+};
+
+export const deleteTeam = async (team_id: string | number) => {
+    const queryString = 'DELETE FROM team WHERE team_id = $1;';
+    const queryParams: any[] = [team_id];
+
+    const { rowCount } = await query(queryString, queryParams);
+
+    if (rowCount === 0)
+        throw new InvalidRequestException(
+            `Invalid Request: Unable to delete Team, Team (${team_id}) does not exist.`,
+        );
+};
+
 export const insertMember = async (
     team_id: string | number,
     user_id: string | number,
@@ -80,21 +107,6 @@ export const deleteMember = async (
     if (rowCount === 0)
         throw new InvalidRequestException(
             `Invalid Request: Team (${team_id}) does not exist or User (${user_id}) does not exist/is not a member of the Team.`,
-        );
-};
-
-export const updateTeamName = async (
-    team_id: string | number,
-    name: string,
-) => {
-    const queryString = 'UPDATE team SET name = $2 WHERE team_id = $1;';
-    const queryParams: any[] = [team_id, name];
-
-    const { rowCount } = await query(queryString, queryParams);
-
-    if (rowCount === 0)
-        throw new InvalidRequestException(
-            `Invalid Request: Unable to update Team's name, Team (${team_id}) does not exist.`,
         );
 };
 

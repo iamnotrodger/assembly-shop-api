@@ -4,6 +4,7 @@ import Team from '../../interface/Team';
 import User from '../../interface/User';
 import {
     deleteMember,
+    deleteTeam,
     insertMember,
     insertTeamAndJoin,
     selectTeamMembers,
@@ -57,6 +58,22 @@ export const createTeam = async (
             message: 'Team Created',
             team,
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const removeTeam = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { team_id } = req.params;
+
+        await deleteTeam(team_id);
+
+        res.status(200).json({ message: `Team (${team_id}) Deleted` });
     } catch (error) {
         next(error);
     }

@@ -6,14 +6,13 @@ import {
 } from '../controllers/AuthenticationController';
 import {
     addMember,
+    changeTeamName,
     createTeam,
     getTeamMembers,
     getTeams,
-} from '../controllers/TeamMember';
-import {
-    changeTeamName,
     removeMember,
-} from '../controllers/TeamMember/TeamController';
+    removeTeam,
+} from '../controllers/TeamController';
 import validateRequest, {
     memberIDSchema,
     memberSchema,
@@ -28,8 +27,16 @@ TeamRoutes.get('', authenticateToken, getTeams);
 
 TeamRoutes.post('', authenticateToken, validateRequest(teamSchema), createTeam);
 
-TeamRoutes.put(
+TeamRoutes.delete(
     '/:team_id',
+    validateParams(teamIDSchema),
+    authenticateToken,
+    authenticateAdminByParams,
+    removeTeam,
+);
+
+TeamRoutes.put(
+    '/:team_id/name',
     validateParams(teamIDSchema),
     validateRequest(teamSchema),
     authenticateToken,
