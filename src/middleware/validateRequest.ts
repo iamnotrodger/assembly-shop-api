@@ -70,4 +70,12 @@ export const updateProjectSchema = Joi.object().keys({
     name: Joi.string().required(),
 });
 
+// Task Schemas
+
+export const taskSchema = Joi.object().keys({
+    project_id: Joi.number().required(),
+    title: Joi.string().required(),
+    context: Joi.string(),
+});
+
 export default validateRequest;

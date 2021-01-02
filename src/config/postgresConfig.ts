@@ -128,6 +128,11 @@ export const commit = async (client: PoolClient) => {
  */
 export const pgError = (error: any) => {
     const { code, message, severity, detail, schema, table } = error;
+
+    if (process.env.NODE_ENV !== 'production') {
+        console.log(code);
+    }
+
     switch (code) {
         //violates unique constraints
         case '23505':
