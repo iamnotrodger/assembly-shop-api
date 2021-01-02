@@ -11,10 +11,13 @@ import {
     getProjects,
     removeProject,
 } from '../controllers/ProjectController';
+import { createTask } from '../controllers/TaskController';
 import validateRequest, {
     getProjectSchema,
     postProjectSchema,
     projectSchema,
+    taskSchema,
+    teamIDSchema,
     updateProjectSchema,
     validateParams,
 } from '../middleware/validateRequest';
@@ -52,6 +55,15 @@ ProjectRoutes.put(
     authenticateToken,
     authenticateAdminByParams,
     changeProjectName,
+);
+
+ProjectRoutes.post(
+    '/:team_id/task',
+    validateParams(teamIDSchema),
+    validateRequest(taskSchema),
+    authenticateToken,
+    authenticateAdminByParams,
+    createTask,
 );
 
 export default ProjectRoutes;
