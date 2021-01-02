@@ -11,8 +11,11 @@ import {
     getProjects,
     removeProject,
 } from '../controllers/ProjectController';
-import { createTask, removeTask } from '../controllers/TaskController';
-import { changeTaskTitle } from '../controllers/TaskController/TaskController';
+import {
+    changeTaskInfo,
+    createTask,
+    removeTask,
+} from '../controllers/TaskController';
 import validateRequest, {
     getProjectSchema,
     postProjectSchema,
@@ -21,8 +24,10 @@ import validateRequest, {
     taskSchema,
     teamIDSchema,
     updateProjectSchema,
-    updateTaskTitleSchema,
+    updateTaskQuerySchema,
+    updateTaskSchema,
     validateParams,
+    validateQuery,
 } from '../middleware/validateRequest';
 
 const ProjectRoutes = Router();
@@ -78,12 +83,13 @@ ProjectRoutes.delete(
 );
 
 ProjectRoutes.put(
-    '/:team_id/task/:task_id/update-title',
+    '/:team_id/task/:task_id',
     validateParams(taskIDSchema),
-    validateRequest(updateTaskTitleSchema),
+    validateQuery(updateTaskQuerySchema),
+    validateRequest(updateTaskSchema),
     authenticateToken,
     authenticateAdminByParams,
-    changeTaskTitle,
+    changeTaskInfo,
 );
 
 export default ProjectRoutes;

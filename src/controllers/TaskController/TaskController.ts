@@ -1,11 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import Task from '../../interface/Task';
-import {
-    deleteTask,
-    insertTask,
-    updateTaskTitle,
-} from '../../models/TaskModel';
+import { deleteTask, insertTask, updateTaskInfo } from '../../models/TaskModel';
 
 export const createTask = async (
     req: Request,
@@ -44,18 +40,21 @@ export const removeTask = async (
     }
 };
 
-export const changeTaskTitle = async (
+export const changeTaskInfo = async (
     req: Request,
     res: Response,
     next: NextFunction,
 ) => {
     try {
         const { task_id } = req.params;
-        const { title } = req.body;
+        const field = req.query.field as string;
+        const { newValue } = req.body;
 
-        await updateTaskTitle(task_id, title);
+        await updateTaskInfo(task_id, field, newValue);
 
-        res.status(200).json({ message: `Updated Task title to '${title}'` });
+        res.status(200).json({
+            message: `Updated Task ${field} to '${newValue}'`,
+        });
     } catch (error) {
         next(error);
     }

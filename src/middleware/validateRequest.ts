@@ -35,6 +35,21 @@ export const validateParams = (schema: Schema): RequestHandler => {
     };
 };
 
+export const validateQuery = (schema: Schema): RequestHandler => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const { error } = schema.validate(req.query);
+        if (error) {
+            const { details } = error;
+            const message: string =
+                'Invalid Request: Invalid URL query. ' +
+                details.map((i) => i.message).join(',');
+            next(new InvalidRequestException(message));
+        } else {
+            next();
+        }
+    };
+};
+
 //Team Schemas + Team Members
 
 export const teamIDSchema = Joi.object().keys({
@@ -87,8 +102,12 @@ export const taskIDSchema = Joi.object().keys({
     task_id: Joi.number().required(),
 });
 
-export const updateTaskTitleSchema = Joi.object().keys({
-    title: Joi.string().required(),
+export const updateTaskQuerySchema = Joi.object().keys({
+    field: Joi.string().valid('title', 'context').required(),
+});
+
+export const updateTaskSchema = Joi.object().keys({
+    newValue: Joi.string().required(),
 });
 
 export default validateRequest;
