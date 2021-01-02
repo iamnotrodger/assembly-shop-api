@@ -78,4 +78,9 @@ export const taskSchema = Joi.object().keys({
     context: Joi.string(),
 });
 
+export const taskIDSchema = Joi.object().keys({
+    team_id: Joi.number().required(),
+    task_id: Joi.number().required(),
+});
+
 export default validateRequest;

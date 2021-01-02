@@ -1,1 +1,1 @@
-export { createTask } from './TaskController';
+export { createTask, removeTask } from './TaskController';

@@ -11,11 +11,12 @@ import {
     getProjects,
     removeProject,
 } from '../controllers/ProjectController';
-import { createTask } from '../controllers/TaskController';
+import { createTask, removeTask } from '../controllers/TaskController';
 import validateRequest, {
     getProjectSchema,
     postProjectSchema,
     projectSchema,
+    taskIDSchema,
     taskSchema,
     teamIDSchema,
     updateProjectSchema,
@@ -64,6 +65,14 @@ ProjectRoutes.post(
     authenticateToken,
     authenticateAdminByParams,
     createTask,
+);
+
+ProjectRoutes.delete(
+    '/:team_id/task/:task_id',
+    validateParams(taskIDSchema),
+    authenticateToken,
+    authenticateAdminByParams,
+    removeTask,
 );
 
 export default ProjectRoutes;

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import Task from '../../interface/Task';
-import { insertTask } from '../../models/TaskModel';
+import { deleteTask, insertTask } from '../../models/TaskModel';
 
 export const createTask = async (
     req: Request,
@@ -20,6 +20,22 @@ export const createTask = async (
     } catch (error) {
         if (error instanceof InvalidRequestException)
             error.message = `Invalid Request: Project (${req.body.project_id}) does not exist.`;
+        next(error);
+    }
+};
+
+export const removeTask = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { task_id } = req.params;
+
+        await deleteTask(task_id);
+
+        res.status(200).json({ message: 'Task Deleted' });
+    } catch (error) {
         next(error);
     }
 };
