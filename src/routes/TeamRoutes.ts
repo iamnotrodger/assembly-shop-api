@@ -10,7 +10,10 @@ import {
     getTeamMembers,
     getTeams,
 } from '../controllers/TeamMember';
-import { removeMember } from '../controllers/TeamMember/TeamController';
+import {
+    changeTeamName,
+    removeMember,
+} from '../controllers/TeamMember/TeamController';
 import validateRequest, {
     memberIDSchema,
     memberSchema,
@@ -24,6 +27,15 @@ const TeamRoutes = Router();
 TeamRoutes.get('', authenticateToken, getTeams);
 
 TeamRoutes.post('', authenticateToken, validateRequest(teamSchema), createTeam);
+
+TeamRoutes.put(
+    '/:team_id',
+    validateParams(teamIDSchema),
+    validateRequest(teamSchema),
+    authenticateToken,
+    authenticateAdminByParams,
+    changeTeamName,
+);
 
 TeamRoutes.get(
     '/:team_id/members',

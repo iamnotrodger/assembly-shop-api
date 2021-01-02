@@ -8,6 +8,7 @@ import {
     insertTeamAndJoin,
     selectTeamMembers,
     selectTeams,
+    updateTeamName,
 } from '../../models/TeamModel';
 
 export const getTeams = async (
@@ -55,6 +56,25 @@ export const createTeam = async (
         res.status(200).json({
             message: 'Team Created',
             team,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const changeTeamName = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { team_id } = req.params;
+        const { name } = req.body;
+
+        await updateTeamName(team_id, name);
+
+        res.status(200).json({
+            message: `Updated Team (${team_id})'s name to '${name}'`,
         });
     } catch (error) {
         next(error);

@@ -83,6 +83,21 @@ export const deleteMember = async (
         );
 };
 
+export const updateTeamName = async (
+    team_id: string | number,
+    name: string,
+) => {
+    const queryString = 'UPDATE team SET name = $2 WHERE team_id = $1;';
+    const queryParams: any[] = [team_id, name];
+
+    const { rowCount } = await query(queryString, queryParams);
+
+    if (rowCount === 0)
+        throw new InvalidRequestException(
+            `Invalid Request: Unable to update Team's name, Team (${team_id}) does not exist.`,
+        );
+};
+
 const insertTeam = async (client: PoolClient, team: Team) => {
     const queryString =
         'INSERT INTO team (administrator, name) VALUES ($1, $2) RETURNING team_id;';
