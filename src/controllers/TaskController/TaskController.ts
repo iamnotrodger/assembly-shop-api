@@ -55,7 +55,7 @@ export const changeTaskTitle = async (
 
         await updateTaskTitle(task_id, title);
 
-        res.status(200).json({ message: `Updated Task title to ${title}` });
+        res.status(200).json({ message: `Updated Task title to '${title}'` });
     } catch (error) {
         next(error);
     }

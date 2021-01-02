@@ -43,6 +43,6 @@ export const updateProjectName = async (
 
     if (rowCount === 0)
         throw new InvalidRequestException(
-            `Invalid Request: Project (${project_id}) does not exist.`,
+            `Invalid Request: Unable to update Project's name, Project (${project_id}) does not exist.`,
         );
 };

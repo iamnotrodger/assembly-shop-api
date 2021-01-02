@@ -73,7 +73,7 @@ export const changeProjectName = async (
         await updateProjectName(project_id, name);
 
         res.status(200).json({
-            message: `Updated Project (${project_id}) name to ${name}`,
+            message: `Updated Project (${project_id}) name to '${name}'`,
         });
     } catch (error) {
         next(error);
