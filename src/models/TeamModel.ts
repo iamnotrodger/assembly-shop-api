@@ -1,6 +1,4 @@
 import { PoolClient } from 'pg';
-import User from '../interface/User';
-import Team from '../interface/Team';
 import {
     commit,
     exec,
@@ -8,8 +6,10 @@ import {
     rollback,
     transaction,
 } from '../config/postgresConfig';
-import NotFoundException from '../exceptions/NotFoundException';
 import InvalidRequestException from '../exceptions/InvalidRequestException';
+import NotFoundException from '../exceptions/NotFoundException';
+import Team from '../interface/Team';
+import User from '../interface/User';
 
 export const selectTeams = async (user_id: string | number) => {
     const queryString =

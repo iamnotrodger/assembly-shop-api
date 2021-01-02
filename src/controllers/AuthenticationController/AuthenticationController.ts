@@ -1,15 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
+import Payload from '../../interface/Payload';
+import User from '../../interface/User';
+import { validateAdmin, validateMember } from '../../models/UserModel';
 import {
     createAccessToken,
-    getTokenFromHeader,
     createRefreshToken,
-    verifyRefreshToken,
+    getTokenFromHeader,
     verifyAccessToken,
+    verifyRefreshToken,
 } from './utils';
-import User from '../../interface/User';
-import Payload from '../../interface/Payload';
-import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
-import { validateAdmin, validateMember } from '../../models/UserModel';
 
 // MIDDLEWARE. Checks and validate access-token sent it with the request. Store User in req.user for the next middleware
 export const authenticateToken = (

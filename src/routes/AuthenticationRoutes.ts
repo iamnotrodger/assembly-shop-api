@@ -1,12 +1,10 @@
-import { NextFunction, Router, Request, Response } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import passport from 'passport';
 import {
-    assignRefreshToken,
     assignAccessToken,
+    assignRefreshToken,
     deaunthenticateRefreshToken,
-    authenticateToken,
 } from '../controllers/AuthenticationController';
-import { authenticateMember } from '../controllers/AuthenticationController/AuthenticationController';
 
 const AuthenticationRoutes = Router();
 

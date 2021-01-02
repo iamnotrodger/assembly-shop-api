@@ -1,7 +1,7 @@
-import NotFoundException from '../exceptions/NotFoundException';
-import User, { UserProfile } from '../interface/User';
 import { query } from '../config/postgresConfig';
 import InvalidRequestException from '../exceptions/InvalidRequestException';
+import NotFoundException from '../exceptions/NotFoundException';
+import User, { UserProfile } from '../interface/User';
 
 export const insertUser = async (user: UserProfile) => {
     const queryString =

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import Task from '../../interface/Task';
 import { deleteTask, insertTask, updateTaskInfo } from '../../models/TaskModel';

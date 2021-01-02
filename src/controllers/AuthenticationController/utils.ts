@@ -1,9 +1,8 @@
-/** @internal */ /** */
 import { Request } from 'express';
 import { sign, verify } from 'jsonwebtoken';
-import Payload from '../../interface/Payload';
-import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
 import AuthenticationTokenMissingException from '../../exceptions/AuthenticationTokenMissingException';
+import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
+import Payload from '../../interface/Payload';
 
 export const getTokenFromHeader = (req: Request) => {
     const { authorization } = req.headers;
