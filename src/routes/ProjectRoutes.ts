@@ -12,6 +12,7 @@ import {
     removeProject,
 } from '../controllers/ProjectController';
 import { createTask, removeTask } from '../controllers/TaskController';
+import { changeTaskTitle } from '../controllers/TaskController/TaskController';
 import validateRequest, {
     getProjectSchema,
     postProjectSchema,
@@ -20,6 +21,7 @@ import validateRequest, {
     taskSchema,
     teamIDSchema,
     updateProjectSchema,
+    updateTaskTitleSchema,
     validateParams,
 } from '../middleware/validateRequest';
 
@@ -73,6 +75,15 @@ ProjectRoutes.delete(
     authenticateToken,
     authenticateAdminByParams,
     removeTask,
+);
+
+ProjectRoutes.put(
+    '/:team_id/task/:task_id/update-title',
+    validateParams(taskIDSchema),
+    validateRequest(updateTaskTitleSchema),
+    authenticateToken,
+    authenticateAdminByParams,
+    changeTaskTitle,
 );
 
 export default ProjectRoutes;

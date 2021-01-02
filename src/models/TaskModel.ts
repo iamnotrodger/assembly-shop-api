@@ -22,3 +22,17 @@ export const deleteTask = async (task_id: string | number) => {
             `Invalid Request: Task (${task_id}) does not exist.`,
         );
 };
+
+export const updateTaskTitle = async (
+    task_id: string | number,
+    title: string,
+) => {
+    const queryString = 'UPDATE task SET title = $2 WHERE task_id = $1;';
+    const queryParams = [task_id, title];
+
+    const { rowCount } = await query(queryString, queryParams);
+    if (rowCount === 0)
+        throw new InvalidRequestException(
+            `Invalid Request: Unable to update Task's Title, Task (${task_id}) does not exist.`,
+        );
+};
