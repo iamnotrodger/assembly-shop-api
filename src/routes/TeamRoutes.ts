@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
-    authenticateAdminByParams,
-    authenticateMemberByParams,
+    authenticateAdmin,
+    authenticateMember,
     authenticateToken,
 } from '../controllers/AuthenticationController';
 import {
@@ -31,7 +31,7 @@ TeamRoutes.delete(
     '/:team_id',
     validateParams(teamIDSchema),
     authenticateToken,
-    authenticateAdminByParams,
+    authenticateAdmin,
     removeTeam,
 );
 
@@ -40,7 +40,7 @@ TeamRoutes.put(
     validateParams(teamIDSchema),
     validateRequest(teamSchema),
     authenticateToken,
-    authenticateAdminByParams,
+    authenticateAdmin,
     changeTeamName,
 );
 
@@ -48,7 +48,7 @@ TeamRoutes.get(
     '/:team_id/members',
     validateParams(teamIDSchema),
     authenticateToken,
-    authenticateMemberByParams,
+    authenticateMember,
     getTeamMembers,
 );
 
@@ -57,7 +57,7 @@ TeamRoutes.post(
     validateParams(teamIDSchema),
     validateRequest(memberIDSchema),
     authenticateToken,
-    authenticateAdminByParams,
+    authenticateAdmin,
     addMember,
 );
 
@@ -65,7 +65,7 @@ TeamRoutes.delete(
     '/:team_id/remove-member/:user_id',
     validateParams(memberSchema),
     authenticateToken,
-    authenticateAdminByParams,
+    authenticateAdmin,
     removeMember,
 );
 

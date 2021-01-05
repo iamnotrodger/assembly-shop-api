@@ -105,32 +105,9 @@ export const authenticateAdmin = async (
     next: NextFunction,
 ) => {
     try {
+        const team_id = req.body.team_id | (req.params.team_id as any);
+
         const { user_id } = req.user as User;
-        const { team_id } = req.body;
-
-        const isValid = await validateAdmin(user_id, team_id);
-
-        if (isValid) {
-            next();
-        } else {
-            throw new NotAuthorizedException(
-                401,
-                'Not Authorized Administrator',
-            );
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const authenticateAdminByParams = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const { user_id } = req.user as User;
-        const { team_id } = req.params;
 
         const isValid = await validateAdmin(user_id, team_id);
 
@@ -153,8 +130,8 @@ export const authenticateMember = async (
     next: NextFunction,
 ) => {
     try {
+        const team_id = req.body.team_id | (req.params.team_id as any);
         const { user_id } = req.user as User;
-        const { team_id } = req.body;
 
         const isValid = await validateMember(user_id, team_id);
 
@@ -187,30 +164,6 @@ export const authenticateTeamMember = async (
         } else {
             throw new InvalidRequestException(
                 `User (${user_id}) not a member of Team (${team_id})`,
-            );
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const authenticateMemberByParams = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const { user_id } = req.user as User;
-        const { team_id } = req.params;
-
-        const isValid = await validateMember(user_id, team_id);
-
-        if (isValid) {
-            next();
-        } else {
-            throw new NotAuthorizedException(
-                401,
-                `Not Authorized Member of Team (${team_id})`,
             );
         }
     } catch (error) {
