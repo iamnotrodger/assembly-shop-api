@@ -3,7 +3,12 @@ import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
 import Payload from '../../interface/Payload';
 import User from '../../interface/User';
-import { validateAdmin, validateMember } from '../../models/UserModel';
+import {
+    validateAdmin,
+    validateMember,
+    validateProjectAdmin,
+    validateProjectMember,
+} from '../../models/UserModel';
 import {
     createAccessToken,
     createRefreshToken,
@@ -105,19 +110,15 @@ export const authenticateAdmin = async (
     next: NextFunction,
 ) => {
     try {
-        const team_id = req.body.team_id | (req.params.team_id as any);
-
         const { user_id } = req.user as User;
+        const team_id = req.body.team_id | (req.params.team_id as any);
 
         const isValid = await validateAdmin(user_id, team_id);
 
         if (isValid) {
             next();
         } else {
-            throw new NotAuthorizedException(
-                401,
-                'Not Authorized Administrator',
-            );
+            throw new NotAuthorizedException(401, 'Not Authorized Admin');
         }
     } catch (error) {
         next(error);
@@ -130,18 +131,15 @@ export const authenticateMember = async (
     next: NextFunction,
 ) => {
     try {
-        const team_id = req.body.team_id | (req.params.team_id as any);
         const { user_id } = req.user as User;
+        const team_id = req.body.team_id | (req.params.team_id as any);
 
         const isValid = await validateMember(user_id, team_id);
 
         if (isValid) {
             next();
         } else {
-            throw new NotAuthorizedException(
-                401,
-                `Not Authorized Member of Team (${team_id})`,
-            );
+            throw new NotAuthorizedException(401, 'Not Authorized Member');
         }
     } catch (error) {
         next(error);
@@ -155,16 +153,58 @@ export const authenticateMemberByRequest = async (
 ) => {
     try {
         const { user_id } = req.body;
-        const { team_id } = req.params;
+        const { project_id } = req.params;
 
-        const isValid = await validateMember(user_id, team_id);
+        const isValid = await validateProjectMember(user_id, project_id);
 
         if (isValid) {
             next();
         } else {
             throw new InvalidRequestException(
-                `User (${user_id}) not a member of Team (${team_id})`,
+                `User (${user_id}) not a member of Project (${project_id})`,
             );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateProjectAdmin = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { user_id } = req.user as User;
+        const project_id = req.body.project_id | (req.params.project_id as any);
+
+        const isValid = await validateProjectAdmin(user_id, project_id);
+
+        if (isValid) {
+            next();
+        } else {
+            throw new NotAuthorizedException(401, 'Not Authorized Admin');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateProjectMember = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { user_id } = req.user as User;
+        const project_id = req.body.project_id | (req.params.project_id as any);
+
+        const isValid = await validateProjectMember(user_id, project_id);
+
+        if (isValid) {
+            next();
+        } else {
+            throw new NotAuthorizedException(401, 'Not Authorized Member');
         }
     } catch (error) {
         next(error);

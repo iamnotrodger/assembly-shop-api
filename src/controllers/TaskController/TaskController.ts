@@ -26,7 +26,7 @@ export const createTask = async (
         });
     } catch (error) {
         if (error instanceof InvalidRequestException)
-            error.message = `Invalid Request: Project (${req.body.project_id}) does not exist.`;
+            error.message = `Invalid Request: Project (${req.params.project_id}) does not exist.`;
         next(error);
     }
 };
@@ -62,28 +62,6 @@ export const changeTaskInfo = async (
         res.status(200).json({
             message: `Updated Task ${field} to '${newValue}'`,
         });
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const authenticateTask = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const { project_id, task_id } = req.params;
-
-        const isValid = await validateTask(project_id, task_id);
-
-        if (isValid) {
-            next();
-        } else {
-            throw new InvalidRequestException(
-                `Invalid Request: Task (${task_id}) does not exist`,
-            );
-        }
     } catch (error) {
         next(error);
     }

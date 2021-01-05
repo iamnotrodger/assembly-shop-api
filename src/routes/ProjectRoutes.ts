@@ -7,6 +7,7 @@ import {
     authenticateAdmin,
     authenticateMember,
     authenticateMemberByRequest,
+    authenticateProjectAdmin,
     authenticateToken,
 } from '../controllers/AuthenticationController';
 import {
@@ -16,16 +17,14 @@ import {
     removeProject,
 } from '../controllers/ProjectController';
 import {
-    authenticateTask,
     changeTaskInfo,
     createTask,
     removeTask,
 } from '../controllers/TaskController';
 import validateRequest, {
-    getProjectSchema,
     postAssignmentSchema,
     postProjectSchema,
-    projectSchema,
+    projectIDSchema,
     taskIDSchema,
     taskSchema,
     teamIDSchema,
@@ -38,14 +37,16 @@ import validateRequest, {
 
 const ProjectRoutes = Router();
 
+//Get Team Projects
 ProjectRoutes.get(
     '/:team_id',
-    validateParams(getProjectSchema),
+    validateParams(teamIDSchema),
     authenticateToken,
     authenticateMember,
     getProjects,
 );
 
+//Create Project
 ProjectRoutes.post(
     '',
     validateRequest(postProjectSchema),
@@ -54,67 +55,72 @@ ProjectRoutes.post(
     createProject,
 );
 
+//Delete Project
 ProjectRoutes.delete(
-    '/:team_id/:project_id',
-    validateParams(projectSchema),
+    '/:project_id',
+    validateParams(projectIDSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateProjectAdmin,
     removeProject,
 );
 
+//Update Project's Name
 ProjectRoutes.put(
-    '/:team_id/:project_id/update-name',
+    '/:project_id/update-name',
+    validateParams(projectIDSchema),
     validateRequest(updateProjectSchema),
-    validateParams(projectSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateProjectAdmin,
     changeProjectName,
 );
 
+//Create Task
 ProjectRoutes.post(
-    '/:team_id/:project_id/task',
-    validateParams(projectSchema),
+    '/:project_id/task',
+    validateParams(projectIDSchema),
     validateRequest(taskSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateProjectAdmin,
     createTask,
 );
 
+//Delete Task
 ProjectRoutes.delete(
-    '/:team_id/:project_id/task/:task_id',
+    '/:project_id/task/:task_id',
     validateParams(taskIDSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateProjectAdmin,
     removeTask,
 );
 
+//Update Task, has query fields
 ProjectRoutes.put(
-    '/:team_id/:project_id/task/:task_id',
+    '/:project_id/task/:task_id',
     validateParams(taskIDSchema),
     validateQuery(updateTaskQuerySchema),
     validateRequest(updateTaskSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateProjectAdmin,
     changeTaskInfo,
 );
 
+//Create Assignment
 ProjectRoutes.post(
-    '/:team_id/:project_id/task/:task_id/assignment',
+    '/:project_id/task/:task_id/assignment',
     validateParams(taskIDSchema),
     validateRequest(postAssignmentSchema),
     authenticateToken,
-    authenticateAdmin,
-    authenticateTask,
+    authenticateProjectAdmin,
     authenticateMemberByRequest,
     createAssignment,
 );
 
+//Delete Assignment
 ProjectRoutes.delete(
-    '/:team_id/:project_id/task/:task_id/assignment',
+    '/:project_id/task/:task_id/assignment',
     validateParams(taskIDSchema),
     authenticateToken,
-    authenticateAdmin,
-    authenticateTask,
+    authenticateProjectAdmin,
     removeAssignment,
 );
 

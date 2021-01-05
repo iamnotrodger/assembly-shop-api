@@ -71,13 +71,8 @@ export const memberSchema = Joi.object().keys({
 
 // Project Schemas
 
-export const projectSchema = Joi.object().keys({
+export const projectIDSchema = Joi.object().keys({
     project_id: Joi.number().required(),
-    team_id: Joi.number().required(),
-});
-
-export const getProjectSchema = Joi.object().keys({
-    team_id: Joi.number().required(),
 });
 
 export const postProjectSchema = Joi.object().keys({
@@ -98,7 +93,6 @@ export const taskSchema = Joi.object().keys({
 
 export const taskIDSchema = Joi.object().keys({
     project_id: Joi.number().required(),
-    team_id: Joi.number().required(),
     task_id: Joi.number().required(),
 });
 
