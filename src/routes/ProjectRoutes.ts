@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import {
-    authenticateAssignment,
     createAssignment,
     removeAssignment,
 } from '../controllers/AssignmentController/indext';
@@ -17,12 +16,12 @@ import {
     removeProject,
 } from '../controllers/ProjectController';
 import {
+    authenticateTask,
     changeTaskInfo,
     createTask,
     removeTask,
 } from '../controllers/TaskController';
 import validateRequest, {
-    assignmentIDSchema,
     getProjectSchema,
     postAssignmentSchema,
     postProjectSchema,
@@ -73,8 +72,8 @@ ProjectRoutes.put(
 );
 
 ProjectRoutes.post(
-    '/:team_id/task',
-    validateParams(teamIDSchema),
+    '/:team_id/:project_id/task',
+    validateParams(projectSchema),
     validateRequest(taskSchema),
     authenticateToken,
     authenticateAdmin,
@@ -82,7 +81,7 @@ ProjectRoutes.post(
 );
 
 ProjectRoutes.delete(
-    '/:team_id/task/:task_id',
+    '/:team_id/:project_id/task/:task_id',
     validateParams(taskIDSchema),
     authenticateToken,
     authenticateAdmin,
@@ -90,7 +89,7 @@ ProjectRoutes.delete(
 );
 
 ProjectRoutes.put(
-    '/:team_id/task/:task_id',
+    '/:team_id/:project_id/task/:task_id',
     validateParams(taskIDSchema),
     validateQuery(updateTaskQuerySchema),
     validateRequest(updateTaskSchema),
@@ -101,21 +100,21 @@ ProjectRoutes.put(
 
 ProjectRoutes.post(
     '/:team_id/:project_id/task/:task_id/assignment',
-    validateParams(assignmentIDSchema),
+    validateParams(taskIDSchema),
     validateRequest(postAssignmentSchema),
     authenticateToken,
     authenticateAdmin,
-    authenticateAssignment,
+    authenticateTask,
     authenticateMemberByRequest,
     createAssignment,
 );
 
 ProjectRoutes.delete(
-    '/:team_id/:project_id/task/:task_id/assignment/',
-    validateParams(assignmentIDSchema),
+    '/:team_id/:project_id/task/:task_id/assignment',
+    validateParams(taskIDSchema),
     authenticateToken,
     authenticateAdmin,
-    authenticateAssignment,
+    authenticateTask,
     removeAssignment,
 );
 

@@ -1,7 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import Task from '../../interface/Task';
-import { deleteTask, insertTask, updateTaskInfo } from '../../models/TaskModel';
+import {
+    deleteTask,
+    insertTask,
+    updateTaskInfo,
+    validateTask,
+} from '../../models/TaskModel';
 
 export const createTask = async (
     req: Request,
@@ -9,7 +14,9 @@ export const createTask = async (
     next: NextFunction,
 ) => {
     try {
+        const { project_id } = req.params;
         const task: Task = req.body;
+        task.project_id = Number(project_id);
 
         task.task_id = await insertTask(task);
 
@@ -55,6 +62,28 @@ export const changeTaskInfo = async (
         res.status(200).json({
             message: `Updated Task ${field} to '${newValue}'`,
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateTask = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { project_id, task_id } = req.params;
+
+        const isValid = await validateTask(project_id, task_id);
+
+        if (isValid) {
+            next();
+        } else {
+            throw new InvalidRequestException(
+                `Invalid Request: Task (${task_id}) does not exist`,
+            );
+        }
     } catch (error) {
         next(error);
     }

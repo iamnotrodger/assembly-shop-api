@@ -92,12 +92,12 @@ export const updateProjectSchema = Joi.object().keys({
 // Task Schemas
 
 export const taskSchema = Joi.object().keys({
-    project_id: Joi.number().required(),
     title: Joi.string().required(),
     context: Joi.string(),
 });
 
 export const taskIDSchema = Joi.object().keys({
+    project_id: Joi.number().required(),
     team_id: Joi.number().required(),
     task_id: Joi.number().required(),
 });
@@ -114,12 +114,6 @@ export const updateTaskSchema = Joi.object().keys({
 
 export const postAssignmentSchema = Joi.object().keys({
     user_id: Joi.number().required(),
-});
-
-export const assignmentIDSchema = Joi.object().keys({
-    project_id: Joi.number().required(),
-    team_id: Joi.number().required(),
-    task_id: Joi.number().required(),
 });
 
 export default validateRequest;
