@@ -1,8 +1,10 @@
 import { Router } from 'express';
+import { createAssignment } from '../controllers/AssignmentController/indext';
 import {
     authenticateAdmin,
     authenticateAdminByParams,
     authenticateMemberByParams,
+    authenticateTeamMember,
     authenticateToken,
 } from '../controllers/AuthenticationController';
 import {
@@ -18,6 +20,7 @@ import {
 } from '../controllers/TaskController';
 import validateRequest, {
     getProjectSchema,
+    postAssignmentSchema,
     postProjectSchema,
     projectSchema,
     taskIDSchema,
@@ -90,6 +93,16 @@ ProjectRoutes.put(
     authenticateToken,
     authenticateAdminByParams,
     changeTaskInfo,
+);
+
+ProjectRoutes.post(
+    '/:team_id/task/:task_id/assignment',
+    validateParams(taskIDSchema),
+    validateRequest(postAssignmentSchema),
+    authenticateToken,
+    authenticateAdminByParams,
+    authenticateTeamMember,
+    createAssignment,
 );
 
 export default ProjectRoutes;

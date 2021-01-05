@@ -1,10 +1,11 @@
 export {
-    authenticateToken,
     assignAccessToken,
     assignRefreshToken,
-    deaunthenticateRefreshToken,
     authenticateAdmin,
     authenticateAdminByParams,
     authenticateMember,
     authenticateMemberByParams,
+    authenticateTeamMember,
+    authenticateToken,
+    deaunthenticateRefreshToken,
 } from './AuthenticationController';

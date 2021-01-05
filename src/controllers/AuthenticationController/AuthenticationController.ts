@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
 import Payload from '../../interface/Payload';
 import User from '../../interface/User';
@@ -163,6 +164,29 @@ export const authenticateMember = async (
             throw new NotAuthorizedException(
                 401,
                 `Not Authorized Member of Team (${team_id})`,
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateTeamMember = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { user_id } = req.body;
+        const { team_id } = req.params;
+
+        const isValid = await validateMember(user_id, team_id);
+
+        if (isValid) {
+            next();
+        } else {
+            throw new InvalidRequestException(
+                `User (${user_id}) not a member of Team (${team_id})`,
             );
         }
     } catch (error) {

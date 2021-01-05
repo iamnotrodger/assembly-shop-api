@@ -110,4 +110,10 @@ export const updateTaskSchema = Joi.object().keys({
     newValue: Joi.string().required(),
 });
 
+// Assignment Schemas
+
+export const postAssignmentSchema = Joi.object().keys({
+    user_id: Joi.number().required(),
+});
+
 export default validateRequest;
