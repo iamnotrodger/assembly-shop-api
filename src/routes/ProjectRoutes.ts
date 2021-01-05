@@ -111,7 +111,7 @@ ProjectRoutes.post(
 );
 
 ProjectRoutes.delete(
-    '/:team_id/:project_id/task/:task_id/assignment/:assignment_id',
+    '/:team_id/:project_id/task/:task_id/assignment/',
     validateParams(assignmentIDSchema),
     authenticateToken,
     authenticateAdmin,

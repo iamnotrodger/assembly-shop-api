@@ -37,12 +37,12 @@ export const removeAssignment = async (
     next: NextFunction,
 ) => {
     try {
-        const { assignment_id } = req.params;
+        const { task_id } = req.params;
 
-        await deleteAssignment(assignment_id);
+        await deleteAssignment(task_id);
 
         res.status(200).json({
-            message: `Assignment (${assignment_id}) Deleted`,
+            message: 'Assignment Deleted',
         });
     } catch (error) {
         next(error);

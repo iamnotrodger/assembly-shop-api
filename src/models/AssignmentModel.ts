@@ -12,14 +12,14 @@ export const insertAssignment = async (assignment: Assignment) => {
     return assignment_id as number;
 };
 
-export const deleteAssignment = async (assignment_id: string | number) => {
-    const queryString = 'DELETE FROM assignment WHERE assignment_id = $1;';
-    const queryParams: any[] = [assignment_id];
+export const deleteAssignment = async (task_id: string | number) => {
+    const queryString = 'DELETE FROM assignment WHERE task_id = $1;';
+    const queryParams: any[] = [task_id];
 
     const { rowCount } = await query(queryString, queryParams);
     if (rowCount === 0)
         throw new InvalidRequestException(
-            `Invalid Request: Unable to delete Assignment, Assignment (${assignment_id})  does not exist.`,
+            'Invalid Request: Unable to delete Assignment, Assignment does not exist.',
         );
 };
 
