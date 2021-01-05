@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+    authenticateAssignment,
     createAssignment,
     removeAssignment,
 } from '../controllers/AssignmentController/indext';
@@ -21,7 +22,7 @@ import {
     removeTask,
 } from '../controllers/TaskController';
 import validateRequest, {
-    deleteAssignmentSchema,
+    assignmentIDSchema,
     getProjectSchema,
     postAssignmentSchema,
     postProjectSchema,
@@ -99,20 +100,22 @@ ProjectRoutes.put(
 );
 
 ProjectRoutes.post(
-    '/:team_id/task/:task_id/assignment',
-    validateParams(taskIDSchema),
+    '/:team_id/:project_id/task/:task_id/assignment',
+    validateParams(assignmentIDSchema),
     validateRequest(postAssignmentSchema),
     authenticateToken,
     authenticateAdmin,
+    authenticateAssignment,
     authenticateMemberByRequest,
     createAssignment,
 );
 
 ProjectRoutes.delete(
-    '/:team_id/task/:task_id/assignment/:assignment_id',
-    validateParams(deleteAssignmentSchema),
+    '/:team_id/:project_id/task/:task_id/assignment/:assignment_id',
+    validateParams(assignmentIDSchema),
     authenticateToken,
     authenticateAdmin,
+    authenticateAssignment,
     removeAssignment,
 );
 

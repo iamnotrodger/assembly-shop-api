@@ -1,1 +1,5 @@
-export { createAssignment, removeAssignment } from './AssignmentController';
+export {
+    createAssignment,
+    removeAssignment,
+    authenticateAssignment,
+} from './AssignmentController';
