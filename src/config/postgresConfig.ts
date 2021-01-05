@@ -131,6 +131,7 @@ export const pgError = (error: any) => {
 
     if (process.env.NODE_ENV !== 'production') {
         console.log(code);
+        console.log(message);
     }
 
     switch (code) {

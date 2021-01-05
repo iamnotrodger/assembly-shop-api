@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
-import Assignment from '../../interface/Assignment';
+import Assignment, { ASSIGNMENT_STATUS } from '../../interface/Assignment';
+import User from '../../interface/User';
 import {
     deleteAssignment,
     insertAssignment,
+    updateAssignment,
 } from '../../models/AssignmentModel';
 
 export const createAssignment = async (
@@ -45,4 +47,19 @@ export const removeAssignment = async (
     } catch (error) {
         next(error);
     }
+};
+
+export const updateAssignmentStatus = (status: ASSIGNMENT_STATUS) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { task_id } = req.params;
+            const { user_id } = req.user as User;
+
+            await updateAssignment(task_id, user_id, status);
+
+            res.status(200).json({ message: `Task (${task_id}) ${status}` });
+        } catch (error) {
+            next(error);
+        }
+    };
 };

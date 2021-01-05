@@ -2,12 +2,14 @@ import { Router } from 'express';
 import {
     createAssignment,
     removeAssignment,
+    updateAssignmentStatus,
 } from '../controllers/AssignmentController/indext';
 import {
     authenticateAdmin,
     authenticateMember,
     authenticateMemberByRequest,
     authenticateProjectAdmin,
+    authenticateProjectMember,
     authenticateToken,
 } from '../controllers/AuthenticationController';
 import {
@@ -122,6 +124,24 @@ ProjectRoutes.delete(
     authenticateToken,
     authenticateProjectAdmin,
     removeAssignment,
+);
+
+//Start Assignment
+ProjectRoutes.put(
+    '/:project_id/task/:task_id/assignment/start',
+    validateParams(taskIDSchema),
+    authenticateToken,
+    authenticateProjectMember,
+    updateAssignmentStatus('ONGOING'),
+);
+
+//Start Assignment
+ProjectRoutes.put(
+    '/:project_id/task/:task_id/assignment/complete',
+    validateParams(taskIDSchema),
+    authenticateToken,
+    authenticateProjectMember,
+    updateAssignmentStatus('COMPLETED'),
 );
 
 export default ProjectRoutes;
