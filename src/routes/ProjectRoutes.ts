@@ -135,7 +135,7 @@ ProjectRoutes.put(
     updateAssignmentStatus('ONGOING'),
 );
 
-//Start Assignment
+//Complete Assignment
 ProjectRoutes.put(
     '/:project_id/task/:task_id/assignment/complete',
     validateParams(taskIDSchema),
