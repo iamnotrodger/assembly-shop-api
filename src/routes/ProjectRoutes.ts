@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { createAssignment } from '../controllers/AssignmentController/indext';
+import {
+    createAssignment,
+    removeAssignment,
+} from '../controllers/AssignmentController/indext';
 import {
     authenticateAdmin,
     authenticateMember,
@@ -18,6 +21,7 @@ import {
     removeTask,
 } from '../controllers/TaskController';
 import validateRequest, {
+    deleteAssignmentSchema,
     getProjectSchema,
     postAssignmentSchema,
     postProjectSchema,
@@ -102,6 +106,14 @@ ProjectRoutes.post(
     authenticateAdmin,
     authenticateMemberByRequest,
     createAssignment,
+);
+
+ProjectRoutes.delete(
+    '/:team_id/task/:task_id/assignment/:assignment_id',
+    validateParams(deleteAssignmentSchema),
+    authenticateToken,
+    authenticateAdmin,
+    removeAssignment,
 );
 
 export default ProjectRoutes;

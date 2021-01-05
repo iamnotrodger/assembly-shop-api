@@ -1,7 +1,6 @@
 import { query } from '../config/postgresConfig';
+import InvalidRequestException from '../exceptions/InvalidRequestException';
 import Assignment from '../interface/Assignment';
-
-// TODO: validate that the user is
 
 export const insertAssignment = async (assignment: Assignment) => {
     const queryString =
@@ -11,4 +10,15 @@ export const insertAssignment = async (assignment: Assignment) => {
     const { rows } = await query(queryString, queryParams);
     const { assignment_id } = rows[0];
     return assignment_id as number;
+};
+
+export const deleteAssignment = async (assignment_id: string | number) => {
+    const queryString = 'DELETE FROM assignment WHERE assignment_id = $1;';
+    const queryParams: any[] = [assignment_id];
+
+    const { rowCount } = await query(queryString, queryParams);
+    if (rowCount === 0)
+        throw new InvalidRequestException(
+            `Invalid Request: Unable to delete Assignment, Assignment (${assignment_id})  does not exist.`,
+        );
 };

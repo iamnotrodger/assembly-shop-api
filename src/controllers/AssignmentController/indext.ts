@@ -1,1 +1,1 @@
-export { createAssignment } from './AssignmentController';
+export { createAssignment, removeAssignment } from './AssignmentController';
