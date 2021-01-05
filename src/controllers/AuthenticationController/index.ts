@@ -3,7 +3,7 @@ export {
     assignRefreshToken,
     authenticateAdmin,
     authenticateMember,
-    authenticateTeamMember,
+    authenticateMemberByRequest,
     authenticateToken,
     deaunthenticateRefreshToken,
 } from './AuthenticationController';

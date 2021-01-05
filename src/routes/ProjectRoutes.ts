@@ -3,7 +3,7 @@ import { createAssignment } from '../controllers/AssignmentController/indext';
 import {
     authenticateAdmin,
     authenticateMember,
-    authenticateTeamMember,
+    authenticateMemberByRequest,
     authenticateToken,
 } from '../controllers/AuthenticationController';
 import {
@@ -100,7 +100,7 @@ ProjectRoutes.post(
     validateRequest(postAssignmentSchema),
     authenticateToken,
     authenticateAdmin,
-    authenticateTeamMember,
+    authenticateMemberByRequest,
     createAssignment,
 );
 

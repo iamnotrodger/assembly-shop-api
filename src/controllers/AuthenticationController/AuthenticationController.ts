@@ -148,7 +148,7 @@ export const authenticateMember = async (
     }
 };
 
-export const authenticateTeamMember = async (
+export const authenticateMemberByRequest = async (
     req: Request,
     res: Response,
     next: NextFunction,
