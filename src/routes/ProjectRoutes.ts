@@ -3,7 +3,7 @@ import {
     createAssignment,
     removeAssignment,
     updateAssignmentStatus,
-} from '../controllers/AssignmentController/indext';
+} from '../controllers/AssignmentController';
 import {
     authenticateAdmin,
     authenticateMember,
@@ -21,6 +21,7 @@ import {
 import {
     changeTaskInfo,
     createTask,
+    getTasks,
     removeTask,
 } from '../controllers/TaskController';
 import validateRequest, {
@@ -29,6 +30,7 @@ import validateRequest, {
     projectIDSchema,
     taskIDSchema,
     taskSchema,
+    taskStatusQuery,
     teamIDSchema,
     updateProjectSchema,
     updateTaskQuerySchema,
@@ -74,6 +76,16 @@ ProjectRoutes.put(
     authenticateToken,
     authenticateProjectAdmin,
     changeProjectName,
+);
+
+//Get Task
+ProjectRoutes.get(
+    '/:project_id/task',
+    validateParams(projectIDSchema),
+    validateQuery(taskStatusQuery),
+    authenticateToken,
+    authenticateProjectMember,
+    getTasks,
 );
 
 //Create Task

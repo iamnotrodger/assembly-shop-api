@@ -5,7 +5,7 @@ import Assignment, { ASSIGNMENT_STATUS } from '../interface/Assignment';
 export const insertAssignment = async (assignment: Assignment) => {
     const queryString =
         'INSERT INTO assignment (task_id, user_id) VALUES ($1, $2) RETURNING assignment_id;';
-    const queryParams: any[] = [assignment.task_id, assignment.user_id];
+    const queryParams: any[] = [assignment.task_id, assignment.user];
 
     const { rows } = await query(queryString, queryParams);
     const { assignment_id } = rows[0];

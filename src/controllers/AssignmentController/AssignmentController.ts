@@ -16,7 +16,7 @@ export const createAssignment = async (
     try {
         const task_id = Number(req.params.task_id);
         const { user_id } = req.body;
-        const assignment: Assignment = { task_id, user_id };
+        const assignment: Assignment = { task_id, user: user_id };
 
         assignment.assignment_id = await insertAssignment(assignment);
 

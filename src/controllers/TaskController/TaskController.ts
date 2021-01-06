@@ -1,12 +1,32 @@
 import { NextFunction, Request, Response } from 'express';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
+import { ASSIGNMENT_STATUS } from '../../interface/Assignment';
 import Task from '../../interface/Task';
 import {
     deleteTask,
     insertTask,
+    selectTask,
     updateTaskInfo,
-    validateTask,
 } from '../../models/TaskModel';
+
+export const getTasks = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { project_id } = req.params;
+        const status = req.query.status as ASSIGNMENT_STATUS;
+
+        const tasks: Task[] = await selectTask(project_id, status);
+
+        res.status(200).json({
+            tasks,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const createTask = async (
     req: Request,

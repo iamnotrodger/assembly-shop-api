@@ -104,6 +104,10 @@ export const updateTaskSchema = Joi.object().keys({
     newValue: Joi.string().required(),
 });
 
+export const taskStatusQuery = Joi.object().keys({
+    status: Joi.string().valid('ONGOING', 'COMPLETED', 'UNASSIGNED'),
+});
+
 // Assignment Schemas
 
 export const postAssignmentSchema = Joi.object().keys({
