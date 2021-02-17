@@ -30,10 +30,27 @@ AuthenticationRoutes.get(
     redirectLogin,
 );
 
+/** Facebook Authentication */
+AuthenticationRoutes.get(
+    '/facebook',
+    passport.authenticate('facebook', {
+        session: false,
+        scope: ['profile', 'email'],
+    }),
+);
+
+/** Facebook Authentication Call Back */
+AuthenticationRoutes.get(
+    '/facebook/callback',
+    passport.authenticate('facebook', { session: false }),
+    assignRefreshToken,
+    redirectLogin,
+);
+
 /** Request new access-token using refresh-token cookie */
 AuthenticationRoutes.post('/token/refresh-token', assignAccessToken);
 
-/** Request to clear refresh-token cookie */
+/** Request to logout and clear refresh-token cookie */
 AuthenticationRoutes.post('/token/logout', deaunthenticateRefreshToken);
 
 export default AuthenticationRoutes;

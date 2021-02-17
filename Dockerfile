@@ -10,5 +10,5 @@ RUN npm install
 #Bundle app source 
 COPY ./ ./
 
-# For typescript, compiling typescript
 # RUN npm run build
+CMD ["npm", "run", "dev"]

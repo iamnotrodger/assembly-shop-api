@@ -12,8 +12,8 @@ export const insertUser = async (user: UserProfile) => {
         user.displayName,
         user.email,
         user.picture || '',
-        user.name?.givenName || '',
-        user.name?.familyName || '',
+        user.name!.givenName || '',
+        user.name!.familyName || '',
     ];
 
     const { rows } = await query(queryString, queryParam);

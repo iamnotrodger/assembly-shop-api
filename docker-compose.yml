@@ -1,8 +1,7 @@
 version: '3.8'
 
 services:
-    # PostgresSQL
-    postgres:
+    db:
         container_name: postgres-assembly-shop
         build: ./postgres
         env_file:
@@ -10,13 +9,11 @@ services:
         ports:
             - '5432:5432'
 
-    # Backend
-    manual-mode-api:
+    app:
         container_name: assembly-shop-api
         build: ./
         env_file:
             - ./.env
-        command: npm run dev
         ports:
             - '3000:3000'
         volumes:

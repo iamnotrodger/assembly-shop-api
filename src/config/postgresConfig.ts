@@ -2,24 +2,10 @@ import { Pool, PoolConfig, PoolClient, QueryResult, types } from 'pg';
 import SQLException from '../exceptions/SQLException';
 import InvalidRequestException from '../exceptions/InvalidRequestException';
 
-let pgconfig: PoolConfig;
-
-if (process.env.NODE_ENV === 'production') {
-    pgconfig = {
-        connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
-    };
-} else {
-    pgconfig = {
-        user: process.env.POSTGRES_USER,
-        database: process.env.POSTGRES_DB,
-        password: process.env.POSTGRES_PASSWORD,
-        host: process.env.POSTGRES_HOST,
-        port: Number(process.env.POSTGRES_PORT!),
-        // max: config.db.max,
-        // idleTimeoutMillis: config.db.idleTimeoutMillis
-    };
-}
+let pgconfig: PoolConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+};
 
 const PostgresClient = new Pool(pgconfig);
 
