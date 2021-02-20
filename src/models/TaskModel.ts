@@ -36,7 +36,7 @@ export const selectTask = async (
                       status: task.status,
                       created: task.assignment_created,
                       user: {
-                          user_id: task.user_id,
+                          userID: task.user_id,
                           email: task.email,
                           giveName: task.given_name,
                           familyName: task.family_name,

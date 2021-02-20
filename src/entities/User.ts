@@ -2,12 +2,15 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
+import Member from './Member';
+import Team from './Team';
 
 @Entity()
 export default class User {
-    @PrimaryGeneratedColumn({ name: 'userID' })
+    @PrimaryGeneratedColumn({ name: 'user_id' })
     userID!: number;
 
     @Column('text', { name: 'provider_id', nullable: true })
@@ -17,7 +20,7 @@ export default class User {
     provider?: string;
 
     @Column('text')
-    email!: string;
+    email?: string;
 
     @Column('text', { nullable: true })
     name?: string;
@@ -30,6 +33,12 @@ export default class User {
 
     @Column('text', { nullable: true })
     picture?: string;
+
+    @OneToMany(() => Team, (team) => team.administrator)
+    teams?: Team[];
+
+    @OneToMany(() => Member, (member) => member.user)
+    member?: Member;
 
     @CreateDateColumn()
     joined?: Date;

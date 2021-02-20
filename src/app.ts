@@ -69,7 +69,7 @@ app.use(passport.initialize());
 //Routes
 app.use('/api/auth', AuthenticationRoutes);
 app.use('/api/team', TeamRoutes);
-app.use('/api/project', ProjectRoutes);
+// app.use('/api/project', ProjectRoutes);
 
 //Error Handling
 app.use(notFound);

@@ -11,7 +11,7 @@ import {
     authenticateProjectAdmin,
     authenticateProjectMember,
     authenticateToken,
-} from '../controllers/AuthenticationController';
+} from '../middleware/authentication';
 import {
     changeProjectName,
     createProject,

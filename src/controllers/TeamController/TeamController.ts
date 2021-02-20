@@ -1,16 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
+import { getCustomRepository } from 'typeorm';
+import Team from '../../entities/Team';
 import User from '../../entities/User';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
-import Team from '../../interface/Team';
-import {
-    deleteMember,
-    deleteTeam,
-    insertMember,
-    insertTeamAndJoin,
-    selectTeamMembers,
-    selectTeams,
-    updateTeamName,
-} from '../../models/TeamModel';
+import MemberRepository from '../../repositories/MemberRepository';
+import TeamRepository from '../../repositories/TeamRepository';
 
 export const getTeams = async (
     req: Request,
@@ -19,7 +13,9 @@ export const getTeams = async (
 ) => {
     try {
         const { userID } = req.user as User;
-        const teams = await selectTeams(userID);
+
+        const memberRepository = getCustomRepository(MemberRepository);
+        const teams = await memberRepository.findTeams(userID);
 
         res.status(200).json({ teams });
     } catch (error) {
@@ -33,8 +29,10 @@ export const getTeamMembers = async (
     next: NextFunction,
 ) => {
     try {
-        const { team_id } = req.params;
-        const members = await selectTeamMembers(team_id);
+        const teamID = Number(req.params.teamID);
+
+        const memberRepository = getCustomRepository(MemberRepository);
+        const members = await memberRepository.findByTeamId(teamID);
 
         res.status(200).json({ members });
     } catch (error) {
@@ -49,10 +47,15 @@ export const createTeam = async (
 ) => {
     try {
         const { userID } = req.user as User;
-        const team: Team = req.body;
-        team.administrator = userID;
+        const { name } = req.body;
 
-        await insertTeamAndJoin(team);
+        const team = new Team();
+        team.name = name;
+        team.administrator = { userID };
+        team.numMembers = 1;
+
+        const teamRepository = getCustomRepository(TeamRepository);
+        await teamRepository.createAndJoin(team);
 
         res.status(200).json({
             message: 'Team Created',
@@ -63,35 +66,43 @@ export const createTeam = async (
     }
 };
 
-export const removeTeam = async (
+export const deleteTeam = async (
     req: Request,
     res: Response,
     next: NextFunction,
 ) => {
     try {
-        const { team_id } = req.params;
+        const teamID = Number(req.params.teamID);
 
-        await deleteTeam(team_id);
+        const teamRepository = getCustomRepository(TeamRepository);
+        const { affected } = await teamRepository.delete({ teamID });
 
-        res.status(200).json({ message: `Team (${team_id}) Deleted` });
+        if (affected == 0) {
+            throw new InvalidRequestException(
+                `Invalid Request: Team (${teamID}) does not exist.`,
+            );
+        }
+
+        res.status(200).json({ message: `Team (${teamID}) Deleted` });
     } catch (error) {
         next(error);
     }
 };
 
-export const changeTeamName = async (
+export const updateTeamName = async (
     req: Request,
     res: Response,
     next: NextFunction,
 ) => {
     try {
-        const { team_id } = req.params;
+        const teamID = Number(req.params.teamID);
         const { name } = req.body;
 
-        await updateTeamName(team_id, name);
+        const teamRepository = getCustomRepository(TeamRepository);
+        await teamRepository.updateTeamName(teamID, name);
 
         res.status(200).json({
-            message: `Updated Team (${team_id})'s name to '${name}'`,
+            message: `Updated Team (${teamID})'s name to '${name}'`,
         });
     } catch (error) {
         next(error);
@@ -104,18 +115,21 @@ export const addMember = async (
     next: NextFunction,
 ) => {
     try {
-        const { team_id } = req.params;
+        const teamID = Number(req.params.teamID);
         const { userID } = req.body;
 
-        await insertMember(team_id, userID);
+        const memberRepository = getCustomRepository(MemberRepository);
+        await memberRepository.createAndSave(teamID, userID);
 
         res.status(200).json({
-            message: `User (${userID}) has been added to Team (${team_id})`,
+            message: `User (${userID}) has been added to Team (${teamID})`,
         });
     } catch (error) {
-        if (error instanceof InvalidRequestException)
-            error.message = `Unable to add User (${req.body.userID}) to Team (${req.body.team_id}). This may be due to the User already being in the team or the User/Team does not exist.`;
-
+        if (error.code == '23505' || error.code == '23503') {
+            error = new InvalidRequestException(
+                `Unable to add User (${req.body.userID}) to Team (${req.params.teamID}). This may be due to the User already being in the team or the User/Team does not exist.`,
+            );
+        }
         next(error);
     }
 };
@@ -126,12 +140,23 @@ export const removeMember = async (
     next: NextFunction,
 ) => {
     try {
-        const { team_id, userID } = req.params;
+        const teamID = Number(req.params.teamID);
+        const userID = Number(req.params.userID);
 
-        await deleteMember(team_id, userID);
+        const memberRepository = getCustomRepository(MemberRepository);
+        const { affected } = await memberRepository.delete({
+            team: { teamID },
+            user: { userID },
+        });
+
+        if (affected == 0) {
+            throw new InvalidRequestException(
+                `Invalid Request: User (${userID}) does not exist/is not a member of the Team.`,
+            );
+        }
 
         res.status(200).json({
-            message: `User (${userID}) has been removed to Team (${team_id})`,
+            message: `User (${userID}) has been removed to Team (${teamID})`,
         });
     } catch (error) {
         next(error);

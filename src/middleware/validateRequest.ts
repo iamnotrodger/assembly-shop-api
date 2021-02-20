@@ -50,24 +50,21 @@ export const validateQuery = (schema: Schema): RequestHandler => {
     };
 };
 
-//Team Schemas + Team Members
+// User Schema
 
-export const teamIDSchema = Joi.object().keys({
-    team_id: Joi.number().required(),
+export const userIDSchema = Joi.object().keys({
+    userID: Joi.number().required(),
 });
 
+//Team + Members Schemas
+
+export const teamIDSchema = Joi.object().keys({
+    teamID: Joi.number().required(),
+});
 export const teamSchema = Joi.object().keys({
     name: Joi.string().required(),
 });
-
-export const memberIDSchema = Joi.object().keys({
-    userID: Joi.number().required(),
-});
-
-export const memberSchema = Joi.object().keys({
-    team_id: Joi.number().required(),
-    userID: Joi.number().required(),
-});
+export const memberSchema = userIDSchema.concat(teamIDSchema);
 
 // Project Schemas
 
@@ -76,7 +73,7 @@ export const projectIDSchema = Joi.object().keys({
 });
 
 export const postProjectSchema = Joi.object().keys({
-    team_id: Joi.number().required(),
+    teamID: Joi.number().required(),
     name: Joi.string().required(),
 });
 

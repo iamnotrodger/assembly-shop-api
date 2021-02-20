@@ -1,39 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import User from '../../entities/User';
-import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
 import Payload from '../../interface/Payload';
-import { validateProjectAdmin } from '../../models/ProjectModel';
-import {
-    validateAdmin,
-    validateMember,
-    validateProjectMember,
-} from '../../models/TeamModel';
 import {
     createAccessToken,
     createRefreshToken,
-    getTokenFromHeader,
-    verifyAccessToken,
     verifyRefreshToken,
 } from './utils';
-
-// MIDDLEWARE. Checks and validate access-token sent it with the request. Store User in req.user for the next middleware
-export const authenticateToken = (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const accessToken = getTokenFromHeader(req);
-        const accessTokenPayload = verifyAccessToken(accessToken);
-        //creates Payload object without Property exp and iat
-        const { exp, iat, ...payload } = accessTokenPayload;
-        req.user = payload;
-        next();
-    } catch (err) {
-        next(err);
-    }
-};
 
 //Used on user login.
 export const assignRefreshToken = async (
@@ -45,7 +18,7 @@ export const assignRefreshToken = async (
         const { userID, email } = req.user as User;
         const payload: Payload = {
             userID,
-            email,
+            email: email!,
         };
 
         const refreshToken = createRefreshToken(payload);
@@ -101,112 +74,5 @@ export const assignAccessToken = async (
         res.status(200).json({ accessToken });
     } catch (err) {
         next(err);
-    }
-};
-
-export const authenticateAdmin = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const { userID } = req.user as User;
-        const team_id = req.body.team_id | (req.params.team_id as any);
-
-        const isValid = await validateAdmin(userID, team_id);
-
-        if (isValid) {
-            next();
-        } else {
-            throw new NotAuthorizedException(401, 'Not Authorized Admin');
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const authenticateMember = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const { userID } = req.user as User;
-        const team_id = req.body.team_id | (req.params.team_id as any);
-
-        const isValid = await validateMember(userID, team_id);
-
-        if (isValid) {
-            next();
-        } else {
-            throw new NotAuthorizedException(401, 'Not Authorized Member');
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const authenticateMemberByRequest = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const { userID } = req.body;
-        const { project_id } = req.params;
-
-        const isValid = await validateProjectMember(userID, project_id);
-
-        if (isValid) {
-            next();
-        } else {
-            throw new InvalidRequestException(
-                `User (${userID}) not a member of Project (${project_id})`,
-            );
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const authenticateProjectAdmin = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const { userID } = req.user as User;
-        const project_id = req.body.project_id | (req.params.project_id as any);
-
-        const isValid = await validateProjectAdmin(userID, project_id);
-
-        if (isValid) {
-            next();
-        } else {
-            throw new NotAuthorizedException(401, 'Not Authorized Admin');
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const authenticateProjectMember = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const { userID } = req.user as User;
-        const project_id = req.body.project_id | (req.params.project_id as any);
-
-        const isValid = await validateProjectMember(userID, project_id);
-
-        if (isValid) {
-            next();
-        } else {
-            throw new NotAuthorizedException(401, 'Not Authorized Member');
-        }
-    } catch (error) {
-        next(error);
     }
 };

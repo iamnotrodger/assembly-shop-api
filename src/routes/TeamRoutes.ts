@@ -1,23 +1,23 @@
 import { Router } from 'express';
 import {
-    authenticateAdmin,
-    authenticateMember,
-    authenticateToken,
-} from '../controllers/AuthenticationController';
-import {
     addMember,
-    changeTeamName,
     createTeam,
+    deleteTeam,
     getTeamMembers,
     getTeams,
     removeMember,
-    removeTeam,
+    updateTeamName,
 } from '../controllers/TeamController';
+import {
+    authenticateAdmin,
+    authenticateMember,
+    authenticateToken,
+} from '../middleware/authentication';
 import validateRequest, {
-    memberIDSchema,
     memberSchema,
     teamIDSchema,
     teamSchema,
+    userIDSchema,
     validateParams,
 } from '../middleware/validateRequest';
 
@@ -28,24 +28,24 @@ TeamRoutes.get('', authenticateToken, getTeams);
 TeamRoutes.post('', authenticateToken, validateRequest(teamSchema), createTeam);
 
 TeamRoutes.delete(
-    '/:team_id',
+    '/:teamID',
     validateParams(teamIDSchema),
     authenticateToken,
     authenticateAdmin,
-    removeTeam,
+    deleteTeam,
 );
 
 TeamRoutes.put(
-    '/:team_id/name',
+    '/:teamID/name',
     validateParams(teamIDSchema),
     validateRequest(teamSchema),
     authenticateToken,
     authenticateAdmin,
-    changeTeamName,
+    updateTeamName,
 );
 
 TeamRoutes.get(
-    '/:team_id/members',
+    '/:teamID/member',
     validateParams(teamIDSchema),
     authenticateToken,
     authenticateMember,
@@ -53,16 +53,16 @@ TeamRoutes.get(
 );
 
 TeamRoutes.post(
-    '/:team_id/add-member',
+    '/:teamID/member',
     validateParams(teamIDSchema),
-    validateRequest(memberIDSchema),
+    validateRequest(userIDSchema),
     authenticateToken,
     authenticateAdmin,
     addMember,
 );
 
 TeamRoutes.delete(
-    '/:team_id/remove-member/:userID',
+    '/:teamID/member/:userID',
     validateParams(memberSchema),
     authenticateToken,
     authenticateAdmin,
