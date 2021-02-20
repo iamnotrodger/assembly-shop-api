@@ -18,8 +18,29 @@ import AuthenticationRoutes from './routes/AuthenticationRoutes';
 import TeamRoutes from './routes/TeamRoutes';
 import ProjectRoutes from './routes/ProjectRoutes';
 
+//Utils
+import { createConnection } from 'typeorm';
+import { join } from 'path';
+
 //Create Express Server
 const app = express();
+
+//Connect to Database
+createConnection({
+    type: 'postgres',
+    database: 'assembly-shop',
+    url: process.env.DATABASE_URL,
+    entities: [join(__dirname, '/entities/*')],
+    migrations: [join(__dirname, '/migrations/*')],
+    synchronize: true,
+    logging: false,
+})
+    .then(() => {
+        console.log('Connected to Postgres');
+    })
+    .catch((error) =>
+        console.error('Unable to Connect to Postgres \n' + error),
+    );
 
 const options: cors.CorsOptions = {
     allowedHeaders: [

@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
+import User from '../../entities/User';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
 import Payload from '../../interface/Payload';
-import User from '../../interface/User';
+import { validateProjectAdmin } from '../../models/ProjectModel';
 import {
     validateAdmin,
     validateMember,
-    validateProjectAdmin,
     validateProjectMember,
-} from '../../models/UserModel';
+} from '../../models/TeamModel';
 import {
     createAccessToken,
     createRefreshToken,
@@ -42,9 +42,9 @@ export const assignRefreshToken = async (
     next: NextFunction,
 ) => {
     try {
-        const { user_id, email } = req.user as User;
+        const { userID, email } = req.user as User;
         const payload: Payload = {
-            user_id,
+            userID,
             email,
         };
 
@@ -110,10 +110,10 @@ export const authenticateAdmin = async (
     next: NextFunction,
 ) => {
     try {
-        const { user_id } = req.user as User;
+        const { userID } = req.user as User;
         const team_id = req.body.team_id | (req.params.team_id as any);
 
-        const isValid = await validateAdmin(user_id, team_id);
+        const isValid = await validateAdmin(userID, team_id);
 
         if (isValid) {
             next();
@@ -131,10 +131,10 @@ export const authenticateMember = async (
     next: NextFunction,
 ) => {
     try {
-        const { user_id } = req.user as User;
+        const { userID } = req.user as User;
         const team_id = req.body.team_id | (req.params.team_id as any);
 
-        const isValid = await validateMember(user_id, team_id);
+        const isValid = await validateMember(userID, team_id);
 
         if (isValid) {
             next();
@@ -152,16 +152,16 @@ export const authenticateMemberByRequest = async (
     next: NextFunction,
 ) => {
     try {
-        const { user_id } = req.body;
+        const { userID } = req.body;
         const { project_id } = req.params;
 
-        const isValid = await validateProjectMember(user_id, project_id);
+        const isValid = await validateProjectMember(userID, project_id);
 
         if (isValid) {
             next();
         } else {
             throw new InvalidRequestException(
-                `User (${user_id}) not a member of Project (${project_id})`,
+                `User (${userID}) not a member of Project (${project_id})`,
             );
         }
     } catch (error) {
@@ -175,10 +175,10 @@ export const authenticateProjectAdmin = async (
     next: NextFunction,
 ) => {
     try {
-        const { user_id } = req.user as User;
+        const { userID } = req.user as User;
         const project_id = req.body.project_id | (req.params.project_id as any);
 
-        const isValid = await validateProjectAdmin(user_id, project_id);
+        const isValid = await validateProjectAdmin(userID, project_id);
 
         if (isValid) {
             next();
@@ -196,10 +196,10 @@ export const authenticateProjectMember = async (
     next: NextFunction,
 ) => {
     try {
-        const { user_id } = req.user as User;
+        const { userID } = req.user as User;
         const project_id = req.body.project_id | (req.params.project_id as any);
 
-        const isValid = await validateProjectMember(user_id, project_id);
+        const isValid = await validateProjectMember(userID, project_id);
 
         if (isValid) {
             next();

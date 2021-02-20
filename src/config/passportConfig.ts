@@ -8,8 +8,8 @@ import {
     Profile as GoogleProfile,
     VerifyFunction,
 } from 'passport-google-oauth';
-import User from '../interface/User';
-import { insertUser, selectUserByProvider } from '../models/UserModel';
+import { getManager } from 'typeorm';
+import User from '../entities/User';
 
 const absoluteURL: string = process.env.URL ? process.env.URL : '';
 
@@ -27,12 +27,7 @@ passport.use(
             done: VerifyFunction,
         ) => {
             try {
-                let user: User = await selectUserByProvider(profile.id);
-
-                if (!user) {
-                    user = await registerUser(profile);
-                }
-
+                const user = await findOrCreateUser(profile);
                 done(null, user);
             } catch (err) {
                 done(err);
@@ -50,12 +45,7 @@ passport.use(
         },
         async (accessToken, refreshToken, profile: FacebookProfile, done) => {
             try {
-                console.log(profile);
-                let user: User = await selectUserByProvider(profile.id);
-
-                if (!user) {
-                    user = await registerUser(profile);
-                }
+                const user = await findOrCreateUser(profile);
                 done(null, user);
             } catch (err) {
                 done(err);
@@ -64,20 +54,28 @@ passport.use(
     ),
 );
 
-const registerUser = async (profile: Profile) => {
-    const { id, provider, displayName, name } = profile;
-    const email = profile.emails![0].value!;
-    const picture =
-        typeof profile.photos == null ? profile.photos![0].value : undefined;
+const findOrCreateUser = async (profile: Profile) => {
+    const { id, provider, displayName, name, photos, emails } = profile;
 
-    const user = await insertUser({
-        id,
-        provider,
-        displayName,
-        name,
-        email,
-        picture,
-    });
+    const userRepository = getManager().getRepository(User);
+    let user = await userRepository.findOne({ providerID: id });
+
+    console.log('find: ', user);
+
+    if (!user) {
+        user = new User();
+        const email = emails![0].value!;
+        user.email = email;
+        user.providerID = id;
+        user.provider = provider;
+        user.name = displayName;
+        user.givenName = name!.givenName;
+        user.familyName = name!.familyName;
+        user.picture = photos![0].value;
+
+        await userRepository.save(user);
+        console.log('created user: ', user);
+    }
 
     return user;
 };

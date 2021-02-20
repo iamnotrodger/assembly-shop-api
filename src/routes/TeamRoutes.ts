@@ -62,7 +62,7 @@ TeamRoutes.post(
 );
 
 TeamRoutes.delete(
-    '/:team_id/remove-member/:user_id',
+    '/:team_id/remove-member/:userID',
     validateParams(memberSchema),
     authenticateToken,
     authenticateAdmin,

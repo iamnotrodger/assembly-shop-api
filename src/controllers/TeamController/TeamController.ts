@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import User from '../../entities/User';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import Team from '../../interface/Team';
-import User from '../../interface/User';
 import {
     deleteMember,
     deleteTeam,
@@ -18,8 +18,8 @@ export const getTeams = async (
     next: NextFunction,
 ) => {
     try {
-        const { user_id } = req.user as User;
-        const teams = await selectTeams(user_id);
+        const { userID } = req.user as User;
+        const teams = await selectTeams(userID);
 
         res.status(200).json({ teams });
     } catch (error) {
@@ -48,9 +48,9 @@ export const createTeam = async (
     next: NextFunction,
 ) => {
     try {
-        const { user_id } = req.user as User;
+        const { userID } = req.user as User;
         const team: Team = req.body;
-        team.administrator = user_id;
+        team.administrator = userID;
 
         await insertTeamAndJoin(team);
 
@@ -105,16 +105,16 @@ export const addMember = async (
 ) => {
     try {
         const { team_id } = req.params;
-        const { user_id } = req.body;
+        const { userID } = req.body;
 
-        await insertMember(team_id, user_id);
+        await insertMember(team_id, userID);
 
         res.status(200).json({
-            message: `User (${user_id}) has been added to Team (${team_id})`,
+            message: `User (${userID}) has been added to Team (${team_id})`,
         });
     } catch (error) {
         if (error instanceof InvalidRequestException)
-            error.message = `Unable to add User (${req.body.user_id}) to Team (${req.body.team_id}). This may be due to the User already being in the team or the User/Team does not exist.`;
+            error.message = `Unable to add User (${req.body.userID}) to Team (${req.body.team_id}). This may be due to the User already being in the team or the User/Team does not exist.`;
 
         next(error);
     }
@@ -126,12 +126,12 @@ export const removeMember = async (
     next: NextFunction,
 ) => {
     try {
-        const { team_id, user_id } = req.params;
+        const { team_id, userID } = req.params;
 
-        await deleteMember(team_id, user_id);
+        await deleteMember(team_id, userID);
 
         res.status(200).json({
-            message: `User (${user_id}) has been removed to Team (${team_id})`,
+            message: `User (${userID}) has been removed to Team (${team_id})`,
         });
     } catch (error) {
         next(error);

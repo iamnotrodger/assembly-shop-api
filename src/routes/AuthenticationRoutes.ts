@@ -8,7 +8,7 @@ import {
 
 const AuthenticationRoutes = Router();
 
-const redirectLogin = (req: Request, res: Response, next: NextFunction) => {
+const redirectLogin = (req: Request, res: Response) => {
     const redirectURL = process.env.FRONT_END_URL! + '/auth';
     res.redirect(302, redirectURL);
 };
@@ -51,6 +51,6 @@ AuthenticationRoutes.get(
 AuthenticationRoutes.post('/token/refresh-token', assignAccessToken);
 
 /** Request to logout and clear refresh-token cookie */
-AuthenticationRoutes.post('/token/logout', deaunthenticateRefreshToken);
+AuthenticationRoutes.post('/logout', deaunthenticateRefreshToken);
 
 export default AuthenticationRoutes;

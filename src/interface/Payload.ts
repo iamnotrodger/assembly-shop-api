@@ -1,5 +1,5 @@
 export default interface Payload {
-    user_id: number;
+    userID: number;
     email: string;
     token_id?: string;
     iat?: number;

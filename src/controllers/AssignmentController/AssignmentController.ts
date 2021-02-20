@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import User from '../../entities/User';
 import InvalidRequestException from '../../exceptions/InvalidRequestException';
 import Assignment, { ASSIGNMENT_STATUS } from '../../interface/Assignment';
-import User from '../../interface/User';
 import {
     deleteAssignment,
     insertAssignment,
@@ -15,8 +15,8 @@ export const createAssignment = async (
 ) => {
     try {
         const task_id = Number(req.params.task_id);
-        const { user_id } = req.body;
-        const assignment: Assignment = { task_id, user: user_id };
+        const { userID } = req.body;
+        const assignment: Assignment = { task_id, user: userID };
 
         assignment.assignment_id = await insertAssignment(assignment);
 
@@ -53,9 +53,9 @@ export const updateAssignmentStatus = (status: ASSIGNMENT_STATUS) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { task_id } = req.params;
-            const { user_id } = req.user as User;
+            const { userID } = req.user as User;
 
-            await updateAssignment(task_id, user_id, status);
+            await updateAssignment(task_id, userID, status);
 
             res.status(200).json({ message: `Task (${task_id}) ${status}` });
         } catch (error) {

@@ -120,3 +120,38 @@ const insertTeam = async (client: PoolClient, team: Team) => {
 
     return team_id as number;
 };
+
+export const validateAdmin = async (
+    user_id: string | number,
+    team_id: string | number,
+) => {
+    const queryString =
+        'SELECT FROM team WHERE administrator = $1 AND team_id = $2;';
+    const queryParam: any[] = [user_id, team_id];
+    const { rowCount } = await query(queryString, queryParam);
+
+    return rowCount > 0;
+};
+
+export const validateMember = async (
+    user_id: string | number,
+    team_id: string | number,
+) => {
+    const queryString =
+        'SELECT FROM team INNER JOIN team_member ON team.team_id = team_member.team_id WHERE user_id = $1 AND team_member.team_id = $2';
+    const queryParam: any[] = [user_id, team_id];
+    const { rowCount } = await query(queryString, queryParam);
+
+    return rowCount > 0;
+};
+
+export const validateProjectMember = async (
+    user_id: string | number,
+    project_id: string | number,
+) => {
+    const queryString =
+        'SELECT FROM project INNER JOIN team_member ON project.team_id = team_member.team_id WHERE project_id = $2 AND user_id = $1;';
+    const queryParams: any[] = [user_id, project_id];
+    const { rowCount } = await query(queryString, queryParams);
+    return rowCount > 0;
+};

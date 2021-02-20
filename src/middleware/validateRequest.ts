@@ -61,12 +61,12 @@ export const teamSchema = Joi.object().keys({
 });
 
 export const memberIDSchema = Joi.object().keys({
-    user_id: Joi.number().required(),
+    userID: Joi.number().required(),
 });
 
 export const memberSchema = Joi.object().keys({
     team_id: Joi.number().required(),
-    user_id: Joi.number().required(),
+    userID: Joi.number().required(),
 });
 
 // Project Schemas
@@ -111,7 +111,7 @@ export const taskStatusQuery = Joi.object().keys({
 // Assignment Schemas
 
 export const postAssignmentSchema = Joi.object().keys({
-    user_id: Joi.number().required(),
+    userID: Joi.number().required(),
 });
 
 export default validateRequest;
