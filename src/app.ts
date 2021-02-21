@@ -21,6 +21,7 @@ import ProjectRoutes from './routes/ProjectRoutes';
 //Utils
 import { createConnection } from 'typeorm';
 import { join } from 'path';
+import MemberRoutes from './routes/MemberRoutes';
 
 //Create Express Server
 const app = express();
@@ -69,6 +70,7 @@ app.use(passport.initialize());
 //Routes
 app.use('/api/auth', AuthenticationRoutes);
 app.use('/api/team', TeamRoutes);
+app.use('/api/team', MemberRoutes);
 app.use('/api', ProjectRoutes);
 
 //Error Handling

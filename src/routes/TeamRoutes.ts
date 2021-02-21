@@ -1,23 +1,17 @@
 import { Router } from 'express';
 import {
-    addMember,
     createTeam,
     deleteTeam,
-    getTeamMembers,
     getTeams,
-    removeMember,
     updateTeamName,
 } from '../controllers/TeamController';
 import {
     authenticateAdmin,
-    authenticateMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, {
-    memberSchema,
-    teamIDSchema,
     nameSchema,
-    userIDSchema,
+    teamIDSchema,
     validateParams,
 } from '../middleware/validateRequest';
 
@@ -42,31 +36,6 @@ TeamRoutes.put(
     authenticateToken,
     authenticateAdmin,
     updateTeamName,
-);
-
-TeamRoutes.get(
-    '/:teamID/member',
-    validateParams(teamIDSchema),
-    authenticateToken,
-    authenticateMember,
-    getTeamMembers,
-);
-
-TeamRoutes.post(
-    '/:teamID/member',
-    validateParams(teamIDSchema),
-    validateRequest(userIDSchema),
-    authenticateToken,
-    authenticateAdmin,
-    addMember,
-);
-
-TeamRoutes.delete(
-    '/:teamID/member/:userID',
-    validateParams(memberSchema),
-    authenticateToken,
-    authenticateAdmin,
-    removeMember,
 );
 
 export default TeamRoutes;
