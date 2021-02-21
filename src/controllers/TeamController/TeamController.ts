@@ -23,23 +23,6 @@ export const getTeams = async (
     }
 };
 
-export const getTeamMembers = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const teamID = Number(req.params.teamID);
-
-        const memberRepository = getCustomRepository(MemberRepository);
-        const members = await memberRepository.findByTeamId(teamID);
-
-        res.status(200).json({ members });
-    } catch (error) {
-        next(error);
-    }
-};
-
 export const createTeam = async (
     req: Request,
     res: Response,
@@ -75,7 +58,7 @@ export const deleteTeam = async (
         const teamID = Number(req.params.teamID);
 
         const teamRepository = getCustomRepository(TeamRepository);
-        const { affected } = await teamRepository.delete({ teamID });
+        const { affected } = await teamRepository.delete(teamID);
 
         if (affected == 0) {
             throw new InvalidRequestException(
@@ -99,11 +82,34 @@ export const updateTeamName = async (
         const { name } = req.body;
 
         const teamRepository = getCustomRepository(TeamRepository);
-        await teamRepository.updateTeamName(teamID, name);
+        const { affected } = await teamRepository.update(teamID, { name });
+
+        if (affected == 0) {
+            throw new InvalidRequestException(
+                `Invalid Request: Team (${teamID}) does not exist.`,
+            );
+        }
 
         res.status(200).json({
             message: `Updated Team (${teamID})'s name to '${name}'`,
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getTeamMembers = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const teamID = Number(req.params.teamID);
+
+        const memberRepository = getCustomRepository(MemberRepository);
+        const members = await memberRepository.findByTeamId(teamID);
+
+        res.status(200).json({ members });
     } catch (error) {
         next(error);
     }

@@ -8,6 +8,7 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import Member from './Member';
+import Project from './Project';
 import User from './User';
 
 @Entity()
@@ -16,7 +17,7 @@ export default class Team {
     teamID!: number;
 
     @Column('text')
-    name!: string;
+    name?: string;
 
     @Column({ name: 'num_members', nullable: true })
     numMembers?: number;
@@ -27,6 +28,9 @@ export default class Team {
 
     @OneToMany(() => Member, (member) => member.team)
     members?: Member[];
+
+    @OneToMany(() => Project, (project) => project.team)
+    projects?: Project[];
 
     @CreateDateColumn()
     created?: Date;

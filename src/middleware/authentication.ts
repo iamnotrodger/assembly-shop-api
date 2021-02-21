@@ -58,7 +58,6 @@ export const authenticateMember = async (
 ) => {
     try {
         const teamID = req.body.teamID | (req.params.teamID as any);
-        console.log(req.user);
 
         const memberRepository = getManager().getRepository(Member);
         const member = await memberRepository.findOne({

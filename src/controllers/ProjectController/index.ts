@@ -1,6 +1,6 @@
 export {
-    changeProjectName,
     createProject,
+    deleteProject,
     getProjects,
-    removeProject,
+    updateProjectName,
 } from './ProjectController';

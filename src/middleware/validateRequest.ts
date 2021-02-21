@@ -51,6 +51,9 @@ export const validateQuery = (schema: Schema): RequestHandler => {
 };
 
 // User Schema
+export const nameSchema = Joi.object().keys({
+    name: Joi.string().required(),
+});
 
 export const userIDSchema = Joi.object().keys({
     userID: Joi.number().required(),
@@ -61,25 +64,15 @@ export const userIDSchema = Joi.object().keys({
 export const teamIDSchema = Joi.object().keys({
     teamID: Joi.number().required(),
 });
-export const teamSchema = Joi.object().keys({
-    name: Joi.string().required(),
-});
 export const memberSchema = userIDSchema.concat(teamIDSchema);
 
 // Project Schemas
 
 export const projectIDSchema = Joi.object().keys({
-    project_id: Joi.number().required(),
+    projectID: Joi.number().required(),
 });
 
-export const postProjectSchema = Joi.object().keys({
-    teamID: Joi.number().required(),
-    name: Joi.string().required(),
-});
-
-export const updateProjectSchema = Joi.object().keys({
-    name: Joi.string().required(),
-});
+export const projectSchema = projectIDSchema.concat(teamIDSchema);
 
 // Task Schemas
 
@@ -89,7 +82,7 @@ export const taskSchema = Joi.object().keys({
 });
 
 export const taskIDSchema = Joi.object().keys({
-    project_id: Joi.number().required(),
+    projectID: Joi.number().required(),
     task_id: Joi.number().required(),
 });
 
