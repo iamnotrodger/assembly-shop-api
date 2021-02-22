@@ -22,8 +22,11 @@ export default class Team {
     @Column({ name: 'num_members', nullable: true })
     numMembers?: number;
 
+    @Column({ name: 'administrator_id', nullable: true })
+    administratorID?: number;
+
     @ManyToOne(() => User, (user) => user.teams, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'administrator' })
+    @JoinColumn({ name: 'administrator_id' })
     administrator?: User;
 
     @OneToMany(() => Member, (member) => member.team)

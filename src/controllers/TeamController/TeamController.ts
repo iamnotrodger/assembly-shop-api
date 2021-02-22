@@ -34,7 +34,7 @@ export const createTeam = async (
 
         const team = new Team();
         team.name = name;
-        team.administrator = { userID };
+        team.administratorID = userID;
         team.numMembers = 1;
 
         const teamRepository = getCustomRepository(TeamRepository);

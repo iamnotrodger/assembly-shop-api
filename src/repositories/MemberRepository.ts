@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import Member from '../entities/Member';
-import InvalidRequestException from '../exceptions/InvalidRequestException';
 
 @EntityRepository(Member)
 export default class MemberRepository extends Repository<Member> {
