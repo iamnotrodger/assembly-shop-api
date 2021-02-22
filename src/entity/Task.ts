@@ -30,7 +30,9 @@ export default class Task {
     @JoinColumn({ name: 'assignee' })
     assignee?: User;
 
-    @ManyToOne(() => Project, (project) => project.tasks)
+    @ManyToOne(() => Project, (project) => project.tasks, {
+        onDelete: 'CASCADE',
+    })
     @JoinColumn({ name: 'project_id' })
     project?: Project;
 

@@ -38,7 +38,7 @@ export const authenticateAdmin = async (
 
         const teamRepository = getManager().getRepository(Team);
         const team = await teamRepository.findOne({
-            where: { teamID: teamID, administrator: userID },
+            where: { teamID: teamID, administratorID: userID },
         });
 
         if (team) {
