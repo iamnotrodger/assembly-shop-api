@@ -14,7 +14,11 @@ import {
     getTasks,
     updateTaskInfo,
 } from '../controller/TaskController';
-import { verifyAssigneeIsTeamMember } from '../controller/TaskController/TaskController';
+import {
+    setTaskCompleted,
+    validateTaskBelongsToUser,
+    verifyAssigneeIsTeamMember,
+} from '../controller/TaskController/TaskController';
 import {
     authenticateMember,
     authenticateToken,
@@ -76,6 +80,15 @@ TaskRoutes.put(
     authenticateMember,
     verifyAssigneeIsTeamMember,
     assignTask,
+);
+
+//Set Task Completed
+TaskRoutes.put(
+    baseURI + '/:taskID/complete',
+    validateParams(taskIDSchema),
+    authenticateToken,
+    validateTaskBelongsToUser,
+    setTaskCompleted,
 );
 
 export default TaskRoutes;

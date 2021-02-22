@@ -1,7 +1,1 @@
-export {
-    deleteLog,
-    getLogs,
-    startLog,
-    stopLog,
-    validateTaskBelongsToUser,
-} from './LogController';
+export { deleteLog, getLogs, startLog, stopLog } from './LogController';

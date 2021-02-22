@@ -5,8 +5,8 @@ import {
     getLogs,
     startLog,
     stopLog,
-    validateTaskBelongsToUser,
 } from '../controller/LogController';
+import { validateTaskBelongsToUser } from '../controller/TaskController';
 import {
     authenticateMember,
     authenticateToken,

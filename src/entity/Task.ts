@@ -24,7 +24,7 @@ export default class Task {
     description?: string;
 
     @Column()
-    finished?: boolean;
+    completed?: boolean;
 
     @Column({ name: 'total_time' })
     totalTime?: number;

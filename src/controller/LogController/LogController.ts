@@ -93,28 +93,3 @@ export const deleteLog = async (
         next(error);
     }
 };
-
-export const validateTaskBelongsToUser = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const taskID = Number(req.params.taskID);
-
-        const taskRepository = getManager().getRepository(Task);
-        const task = await taskRepository.findOne({
-            where: { taskID, assignee: req.user },
-        });
-
-        if (task) {
-            next();
-        } else {
-            throw new InvalidRequestException(
-                `Invalid Request: Task (${taskID}) does not belong to User.`,
-            );
-        }
-    } catch (error) {
-        next(error);
-    }
-};

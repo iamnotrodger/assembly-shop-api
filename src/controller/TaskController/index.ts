@@ -1,7 +1,10 @@
 export {
-    updateTaskInfo,
-    createTask,
-    getTasks,
-    deleteTask,
     assignTask,
+    createTask,
+    deleteTask,
+    getTasks,
+    setTaskCompleted,
+    updateTaskInfo,
+    validateTaskBelongsToUser,
+    verifyAssigneeIsTeamMember,
 } from './TaskController';

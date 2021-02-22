@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { getManager } from 'typeorm';
+import { getCustomRepository, getManager } from 'typeorm';
 import Member from '../../entity/Member';
 import Task from '../../entity/Task';
 import InvalidRequestException from '../../exception/InvalidRequestException';
-import NotAuthorizedException from '../../exception/NotAuthorizedException';
+import TaskRepository from '../../repository/TaskRepository';
 
 export const getTasks = async (
     req: Request,
@@ -13,7 +13,7 @@ export const getTasks = async (
     try {
         const projectID = Number(req.params.projectID);
 
-        const taskRepository = getManager().getRepository(Task);
+        const taskRepository = getCustomRepository(TaskRepository);
         const tasks = await taskRepository.find({
             relations: ['assignee', 'activeLog'],
             where: { project: { projectID } },
@@ -41,10 +41,10 @@ export const createTask = async (
         task.description = description;
         task.project = { projectID };
         task.assignee = assignee;
-        task.finished = false;
+        task.completed = false;
         task.totalTime = 0;
 
-        const taskRepository = getManager().getRepository(Task);
+        const taskRepository = getCustomRepository(TaskRepository);
         await taskRepository.save(task);
 
         res.status(200).json({
@@ -69,7 +69,7 @@ export const deleteTask = async (
     try {
         const taskID = req.params.taskID;
 
-        const taskRepository = getManager().getRepository(Task);
+        const taskRepository = getCustomRepository(TaskRepository);
         const { affected } = await taskRepository.delete(taskID);
 
         if (affected == 0) {
@@ -97,7 +97,7 @@ export const updateTaskInfo = async (
         const updateInfo =
             field === 'title' ? { title: newValue } : { description: newValue };
 
-        const taskRepository = getManager().getRepository(Task);
+        const taskRepository = getCustomRepository(TaskRepository);
         const { affected } = await taskRepository.update(taskID, updateInfo);
 
         if (affected == 0) {
@@ -123,7 +123,7 @@ export const assignTask = async (
         const taskID = Number(req.params.taskID);
         const { assignee } = req.body;
 
-        const taskRepository = getManager().getRepository(Task);
+        const taskRepository = getCustomRepository(TaskRepository);
         const { affected } = await taskRepository.update(taskID, { assignee });
 
         if (affected == 0) {
@@ -141,6 +141,32 @@ export const assignTask = async (
                 `Invalid Request: User (${req.body.assignee.userID}) does not exist.`,
             );
         }
+        next(error);
+    }
+};
+
+export const setTaskCompleted = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const taskID = Number(req.params.taskID);
+
+        const taskRepository = getCustomRepository(TaskRepository);
+        const log = await taskRepository.completed(taskID);
+
+        if (!log) {
+            throw new InvalidRequestException(
+                `Invalid Request: Task (${taskID}) does not exist.`,
+            );
+        }
+
+        res.status(200).json({
+            message: `Task (${taskID}) set to completed.`,
+            log,
+        });
+    } catch (error) {
         next(error);
     }
 };
@@ -168,6 +194,31 @@ export const verifyAssigneeIsTeamMember = async (
         } else {
             throw new InvalidRequestException(
                 `Invalid Request: User (${assignee.userID}) is not a part of Team (${teamID}).`,
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const validateTaskBelongsToUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const taskID = Number(req.params.taskID);
+
+        const taskRepository = getManager().getRepository(Task);
+        const task = await taskRepository.findOne({
+            where: { taskID, assignee: req.user },
+        });
+
+        if (task) {
+            next();
+        } else {
+            throw new InvalidRequestException(
+                `Invalid Request: Task (${taskID}) does not belong to User.`,
             );
         }
     } catch (error) {
