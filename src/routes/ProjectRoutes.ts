@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { nameSchema, projectSchema, teamIDSchema } from '../config/joiSchemas';
 import {
     createProject,
     deleteProject,
@@ -10,12 +11,7 @@ import {
     authenticateMember,
     authenticateToken,
 } from '../middleware/authentication';
-import validateRequest, {
-    nameSchema,
-    projectSchema,
-    teamIDSchema,
-    validateParams,
-} from '../middleware/validateRequest';
+import validateRequest, { validateParams } from '../middleware/validateRequest';
 
 const ProjectRoutes = Router();
 const baseURI = '/team/:teamID/project';
@@ -56,46 +52,6 @@ ProjectRoutes.put(
     authenticateAdmin,
     updateProjectName,
 );
-
-// //Get Task
-// ProjectRoutes.get(
-//     '/:project_id/task',
-//     validateParams(projectIDSchema),
-//     validateQuery(taskStatusQuery),
-//     authenticateToken,
-//     authenticateProjectMember,
-//     getTasks,
-// );
-
-// //Create Task
-// ProjectRoutes.post(
-//     '/:project_id/task',
-//     validateParams(projectIDSchema),
-//     validateRequest(taskSchema),
-//     authenticateToken,
-//     authenticateProjectAdmin,
-//     createTask,
-// );
-
-// //Delete Task
-// ProjectRoutes.delete(
-//     '/:project_id/task/:task_id',
-//     validateParams(taskIDSchema),
-//     authenticateToken,
-//     authenticateProjectAdmin,
-//     removeTask,
-// );
-
-// //Update Task, has query fields
-// ProjectRoutes.put(
-//     '/:project_id/task/:task_id',
-//     validateParams(taskIDSchema),
-//     validateQuery(updateTaskQuerySchema),
-//     validateRequest(updateTaskSchema),
-//     authenticateToken,
-//     authenticateProjectAdmin,
-//     changeTaskInfo,
-// );
 
 // //Create Assignment
 // ProjectRoutes.post(

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { nameSchema, teamIDSchema } from '../config/joiSchemas';
 import {
     createTeam,
     deleteTeam,
@@ -9,11 +10,7 @@ import {
     authenticateAdmin,
     authenticateToken,
 } from '../middleware/authentication';
-import validateRequest, {
-    nameSchema,
-    teamIDSchema,
-    validateParams,
-} from '../middleware/validateRequest';
+import validateRequest, { validateParams } from '../middleware/validateRequest';
 
 const TeamRoutes = Router();
 

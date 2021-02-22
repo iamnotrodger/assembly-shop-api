@@ -1,6 +1,7 @@
 export {
-    changeTaskInfo,
+    updateTaskInfo,
     createTask,
     getTasks,
-    removeTask,
+    deleteTask,
+    assignTask,
 } from './TaskController';

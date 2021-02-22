@@ -1,20 +1,16 @@
 import { Router } from 'express';
+import { memberSchema, teamIDSchema, userIDSchema } from '../config/joiSchemas';
 import {
-    getTeamMembers,
     addMember,
+    getTeamMembers,
     removeMember,
 } from '../controllers/MemberController';
 import {
-    authenticateToken,
-    authenticateMember,
     authenticateAdmin,
+    authenticateMember,
+    authenticateToken,
 } from '../middleware/authentication';
-import validateRequest, {
-    validateParams,
-    teamIDSchema,
-    userIDSchema,
-    memberSchema,
-} from '../middleware/validateRequest';
+import validateRequest, { validateParams } from '../middleware/validateRequest';
 
 const MemberRoutes = Router();
 

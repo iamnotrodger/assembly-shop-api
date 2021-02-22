@@ -10,18 +10,18 @@ import cookieParser from 'cookie-parser';
 import passport from 'passport';
 
 //Configuration
-import './config/postgresConfig';
 import './config/passportConfig';
 
 //Routes
 import AuthenticationRoutes from './routes/AuthenticationRoutes';
 import TeamRoutes from './routes/TeamRoutes';
 import ProjectRoutes from './routes/ProjectRoutes';
+import MemberRoutes from './routes/MemberRoutes';
+import TaskRoutes from './routes/TaskRoutes';
 
 //Utils
 import { createConnection } from 'typeorm';
 import { join } from 'path';
-import MemberRoutes from './routes/MemberRoutes';
 
 //Create Express Server
 const app = express();
@@ -72,6 +72,7 @@ app.use('/api/auth', AuthenticationRoutes);
 app.use('/api/team', TeamRoutes);
 app.use('/api/team', MemberRoutes);
 app.use('/api', ProjectRoutes);
+app.use('/api', TaskRoutes);
 
 //Error Handling
 app.use(notFound);

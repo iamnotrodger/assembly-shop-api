@@ -1,4 +1,4 @@
-import Joi, { Schema } from 'joi';
+import { Schema } from 'joi';
 import { NextFunction, Request, Response, RequestHandler } from 'express';
 import InvalidRequestException from '../exceptions/InvalidRequestException';
 import NotFoundException from '../exceptions/NotFoundException';
@@ -49,59 +49,5 @@ export const validateQuery = (schema: Schema): RequestHandler => {
         }
     };
 };
-
-// User Schema
-export const nameSchema = Joi.object().keys({
-    name: Joi.string().required(),
-});
-
-export const userIDSchema = Joi.object().keys({
-    userID: Joi.number().required(),
-});
-
-//Team + Members Schemas
-
-export const teamIDSchema = Joi.object().keys({
-    teamID: Joi.number().required(),
-});
-export const memberSchema = userIDSchema.concat(teamIDSchema);
-
-// Project Schemas
-
-export const projectIDSchema = Joi.object().keys({
-    projectID: Joi.number().required(),
-});
-
-export const projectSchema = projectIDSchema.concat(teamIDSchema);
-
-// Task Schemas
-
-export const taskSchema = Joi.object().keys({
-    title: Joi.string().required(),
-    context: Joi.string(),
-});
-
-export const taskIDSchema = Joi.object().keys({
-    projectID: Joi.number().required(),
-    task_id: Joi.number().required(),
-});
-
-export const updateTaskQuerySchema = Joi.object().keys({
-    field: Joi.string().valid('title', 'context').required(),
-});
-
-export const updateTaskSchema = Joi.object().keys({
-    newValue: Joi.string().required(),
-});
-
-export const taskStatusQuery = Joi.object().keys({
-    status: Joi.string().valid('ONGOING', 'COMPLETED', 'UNASSIGNED'),
-});
-
-// Assignment Schemas
-
-export const postAssignmentSchema = Joi.object().keys({
-    userID: Joi.number().required(),
-});
 
 export default validateRequest;
