@@ -17,35 +17,30 @@ export default class LogRepository extends Repository<Log> {
         });
     }
 
-    stop(logID: number) {
+    stop(taskID: number) {
         return this.manager.transaction(async (transactionManager) => {
-            const result = await transactionManager
-                .createQueryBuilder()
-                .update(Log)
-                .set({ endTime: new Date() })
-                .where('log_id = :logID', { logID })
-                .returning('*')
-                .execute();
+            const task = await transactionManager.findOne(Task, {
+                relations: ['activeLog'],
+                where: { taskID },
+            });
 
             let log;
 
-            if (result.affected! > 0) {
-                const { log_id, task_id, start_time, end_time } = result.raw[0];
+            if (task && task.activeLog) {
+                const { activeLog } = task;
+                activeLog.endTime = new Date();
 
-                log = new Log();
-                log.logID = log_id;
-                log.taskID = task_id;
-                log.startTime = start_time;
-                log.endTime = end_time;
+                const { logID, endTime, startTime } = activeLog;
+                const total = endTime.getTime() - startTime!.getTime();
 
-                const total = log.endTime!.getTime() - log.startTime!.getTime();
+                task.totalTime! += total;
+                task.activeLog = null;
 
-                await transactionManager.update(Task, log.taskID, {
-                    totalTime: () => `total_time + ${total}`,
-                    activeLog: null,
-                });
+                await transactionManager.update(Log, logID, activeLog);
+                await transactionManager.update(Task, taskID, task);
+
+                log = activeLog;
             }
-
             return log;
         });
     }

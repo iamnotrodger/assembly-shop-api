@@ -25,7 +25,7 @@ LogRoutes.get(
 );
 
 LogRoutes.post(
-    baseURI,
+    baseURI + '/start',
     validateParams(taskIDSchema),
     authenticateToken,
     validateTaskBelongsToUser,
@@ -33,8 +33,8 @@ LogRoutes.post(
 );
 
 LogRoutes.put(
-    baseURI + '/:logID',
-    validateParams(logIDSchema),
+    baseURI + '/stop',
+    validateParams(taskIDSchema),
     authenticateToken,
     validateTaskBelongsToUser,
     stopLog,

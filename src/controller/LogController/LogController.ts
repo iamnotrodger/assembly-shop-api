@@ -47,14 +47,14 @@ export const stopLog = async (
     next: NextFunction,
 ) => {
     try {
-        const logID = Number(req.params.logID);
+        const taskID = Number(req.params.taskID);
 
         const logRepository = getCustomRepository(LogRepository);
-        const log = await logRepository.stop(logID);
+        const log = await logRepository.stop(taskID);
 
         if (!log) {
             throw new InvalidRequestException(
-                `Invalid Request: Log (${logID}) does not exist.`,
+                `Invalid Request: Task (${taskID}) does not exist or task does not have an active log.`,
             );
         }
 
