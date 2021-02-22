@@ -15,7 +15,7 @@ export const getTasks = async (
 
         const taskRepository = getManager().getRepository(Task);
         const tasks = await taskRepository.find({
-            relations: ['assignee'],
+            relations: ['assignee', 'activeLog'],
             where: { project: { projectID } },
         });
 

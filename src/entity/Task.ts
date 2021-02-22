@@ -4,8 +4,11 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
+    OneToMany,
+    OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
+import Log from './Log';
 import Project from './Project';
 import User from './User';
 
@@ -30,11 +33,18 @@ export default class Task {
     @JoinColumn({ name: 'assignee' })
     assignee?: User;
 
+    @OneToOne(() => Log, { nullable: true, onDelete: 'SET NULL' })
+    @JoinColumn({ name: 'active_log' })
+    activeLog?: Log | null;
+
     @ManyToOne(() => Project, (project) => project.tasks, {
         onDelete: 'CASCADE',
     })
     @JoinColumn({ name: 'project_id' })
     project?: Project;
+
+    @OneToMany(() => Log, (log) => log.task)
+    logs?: Log[];
 
     @CreateDateColumn()
     created?: Date;

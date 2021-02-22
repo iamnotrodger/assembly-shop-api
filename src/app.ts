@@ -18,6 +18,7 @@ import TeamRoutes from './route/TeamRoutes';
 import ProjectRoutes from './route/ProjectRoutes';
 import MemberRoutes from './route/MemberRoutes';
 import TaskRoutes from './route/TaskRoutes';
+import LogRoutes from './route/LogRoutes';
 
 //Utils
 import { createConnection } from 'typeorm';
@@ -73,6 +74,7 @@ app.use('/api/team', TeamRoutes);
 app.use('/api/team', MemberRoutes);
 app.use('/api', ProjectRoutes);
 app.use('/api', TaskRoutes);
+app.use('/api', LogRoutes);
 
 //Error Handling
 app.use(notFound);
