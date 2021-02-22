@@ -9,6 +9,10 @@ export const userIDSchema = Joi.object().keys({
     userID: Joi.number().required(),
 });
 
+export const userEmailSchema = Joi.object().keys({
+    email: Joi.string().required(),
+});
+
 //Team + Members Schemas
 
 export const teamIDSchema = Joi.object().keys({

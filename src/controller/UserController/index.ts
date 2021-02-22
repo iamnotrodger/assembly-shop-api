@@ -1,0 +1,1 @@
+export { getUsersByEmail } from './UserController';
