@@ -171,6 +171,33 @@ export const setTaskCompleted = async (
     }
 };
 
+export const setTaskIncomplete = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const taskID = Number(req.params.taskID);
+
+        const taskRepository = getCustomRepository(TaskRepository);
+        const { affected } = await taskRepository.update(taskID, {
+            completed: false,
+        });
+
+        if (affected == 0) {
+            throw new InvalidRequestException(
+                `Invalid Request: Task (${taskID}) does not exist.`,
+            );
+        }
+
+        res.status(200).json({
+            message: `Task (${taskID}) set to incomplete.`,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const verifyAssigneeIsTeamMember = async (
     req: Request,
     res: Response,

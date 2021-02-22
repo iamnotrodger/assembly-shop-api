@@ -60,8 +60,6 @@ const findOrCreateUser = async (profile: Profile) => {
     const userRepository = getManager().getRepository(User);
     let user = await userRepository.findOne({ providerID: id });
 
-    console.log('find: ', user);
-
     if (!user) {
         user = new User();
         const email = emails![0].value!;

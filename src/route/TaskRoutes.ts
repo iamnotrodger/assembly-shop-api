@@ -16,6 +16,7 @@ import {
 } from '../controller/TaskController';
 import {
     setTaskCompleted,
+    setTaskIncomplete,
     validateTaskBelongsToUser,
     verifyAssigneeIsTeamMember,
 } from '../controller/TaskController/TaskController';
@@ -89,6 +90,15 @@ TaskRoutes.put(
     authenticateToken,
     validateTaskBelongsToUser,
     setTaskCompleted,
+);
+
+//Set Task Incomplete
+TaskRoutes.put(
+    baseURI + '/:taskID/incomplete',
+    validateParams(taskIDSchema),
+    authenticateToken,
+    validateTaskBelongsToUser,
+    setTaskIncomplete,
 );
 
 export default TaskRoutes;

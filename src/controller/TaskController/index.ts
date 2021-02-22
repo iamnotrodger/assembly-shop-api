@@ -4,6 +4,7 @@ export {
     deleteTask,
     getTasks,
     setTaskCompleted,
+    setTaskIncomplete,
     updateTaskInfo,
     validateTaskBelongsToUser,
     verifyAssigneeIsTeamMember,
