@@ -5,7 +5,7 @@ import {
     deleteTeam,
     getTeams,
     updateTeamName,
-} from '../controllers/TeamController';
+} from '../controller/TeamController';
 import {
     authenticateAdmin,
     authenticateToken,

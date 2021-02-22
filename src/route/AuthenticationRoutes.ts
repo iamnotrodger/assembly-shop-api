@@ -4,7 +4,7 @@ import {
     assignAccessToken,
     assignRefreshToken,
     deaunthenticateRefreshToken,
-} from '../controllers/AuthenticationController';
+} from '../controller/AuthenticationController';
 
 const AuthenticationRoutes = Router();
 

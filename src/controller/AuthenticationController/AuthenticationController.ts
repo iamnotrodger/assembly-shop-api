@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import User from '../../entities/User';
-import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
+import User from '../../entity/User';
+import NotAuthorizedException from '../../exception/NotAuthorizedException';
 import Payload from '../../interface/Payload';
 import {
     createAccessToken,

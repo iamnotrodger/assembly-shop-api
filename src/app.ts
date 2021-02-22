@@ -13,11 +13,11 @@ import passport from 'passport';
 import './config/passportConfig';
 
 //Routes
-import AuthenticationRoutes from './routes/AuthenticationRoutes';
-import TeamRoutes from './routes/TeamRoutes';
-import ProjectRoutes from './routes/ProjectRoutes';
-import MemberRoutes from './routes/MemberRoutes';
-import TaskRoutes from './routes/TaskRoutes';
+import AuthenticationRoutes from './route/AuthenticationRoutes';
+import TeamRoutes from './route/TeamRoutes';
+import ProjectRoutes from './route/ProjectRoutes';
+import MemberRoutes from './route/MemberRoutes';
+import TaskRoutes from './route/TaskRoutes';
 
 //Utils
 import { createConnection } from 'typeorm';
@@ -31,8 +31,8 @@ createConnection({
     type: 'postgres',
     database: 'assembly-shop',
     url: process.env.DATABASE_URL,
-    entities: [join(__dirname, '/entities/*')],
-    migrations: [join(__dirname, '/migrations/*')],
+    entities: [join(__dirname, '/entity/*')],
+    migrations: [join(__dirname, '/migration/*')],
     synchronize: true,
     logging: false,
 })

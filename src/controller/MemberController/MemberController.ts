@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
-import InvalidRequestException from '../../exceptions/InvalidRequestException';
-import MemberRepository from '../../repositories/MemberRepository';
+import InvalidRequestException from '../../exception/InvalidRequestException';
+import MemberRepository from '../../repository/MemberRepository';
 
 export const getTeamMembers = async (
     req: Request,

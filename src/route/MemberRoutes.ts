@@ -4,7 +4,7 @@ import {
     addMember,
     getTeamMembers,
     removeMember,
-} from '../controllers/MemberController';
+} from '../controller/MemberController';
 import {
     authenticateAdmin,
     authenticateMember,

@@ -9,7 +9,7 @@ import {
     VerifyFunction,
 } from 'passport-google-oauth';
 import { getManager } from 'typeorm';
-import User from '../entities/User';
+import User from '../entity/User';
 
 const absoluteURL: string = process.env.URL ? process.env.URL : '';
 

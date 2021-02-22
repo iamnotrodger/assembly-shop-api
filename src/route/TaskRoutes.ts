@@ -13,8 +13,8 @@ import {
     deleteTask,
     getTasks,
     updateTaskInfo,
-} from '../controllers/TaskController';
-import { verifyAssigneeIsTeamMember } from '../controllers/TaskController/TaskController';
+} from '../controller/TaskController';
+import { verifyAssigneeIsTeamMember } from '../controller/TaskController/TaskController';
 import {
     authenticateMember,
     authenticateToken,

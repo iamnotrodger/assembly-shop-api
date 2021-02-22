@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import Member from '../entities/Member';
+import Member from '../entity/Member';
 
 @EntityRepository(Member)
 export default class MemberRepository extends Repository<Member> {

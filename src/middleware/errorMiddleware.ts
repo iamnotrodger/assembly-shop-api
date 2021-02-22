@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import HttpException from '../exceptions/HttpException';
+import HttpException from '../exception/HttpException';
 
 /** The Request gets re-routed to this Middleware if an Error is ever thrown */
 const errorMiddleware = (

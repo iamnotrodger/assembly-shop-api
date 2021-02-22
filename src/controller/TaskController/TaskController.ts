@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { getManager } from 'typeorm';
-import Member from '../../entities/Member';
-import Task from '../../entities/Task';
-import InvalidRequestException from '../../exceptions/InvalidRequestException';
-import NotAuthorizedException from '../../exceptions/NotAuthorizedException';
+import Member from '../../entity/Member';
+import Task from '../../entity/Task';
+import InvalidRequestException from '../../exception/InvalidRequestException';
+import NotAuthorizedException from '../../exception/NotAuthorizedException';
 
 export const getTasks = async (
     req: Request,

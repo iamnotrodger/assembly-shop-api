@@ -5,7 +5,7 @@ import {
     deleteProject,
     getProjects,
     updateProjectName,
-} from '../controllers/ProjectController';
+} from '../controller/ProjectController';
 import {
     authenticateAdmin,
     authenticateMember,

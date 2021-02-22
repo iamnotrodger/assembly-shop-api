@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { getManager } from 'typeorm';
-import Project from '../../entities/Project';
-import InvalidRequestException from '../../exceptions/InvalidRequestException';
+import Project from '../../entity/Project';
+import InvalidRequestException from '../../exception/InvalidRequestException';
 
 export const getProjects = async (
     req: Request,

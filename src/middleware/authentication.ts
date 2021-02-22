@@ -3,11 +3,11 @@ import { getManager } from 'typeorm';
 import {
     getTokenFromHeader,
     verifyAccessToken,
-} from '../controllers/AuthenticationController/utils';
-import Member from '../entities/Member';
-import Team from '../entities/Team';
-import User from '../entities/User';
-import NotAuthorizedException from '../exceptions/NotAuthorizedException';
+} from '../controller/AuthenticationController/utils';
+import Member from '../entity/Member';
+import Team from '../entity/Team';
+import User from '../entity/User';
+import NotAuthorizedException from '../exception/NotAuthorizedException';
 
 // Checks and validate access-token sent it with the request. Store User in req.user for the next middleware
 export const authenticateToken = (

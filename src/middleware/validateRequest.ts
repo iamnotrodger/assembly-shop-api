@@ -1,7 +1,7 @@
 import { Schema } from 'joi';
 import { NextFunction, Request, Response, RequestHandler } from 'express';
-import InvalidRequestException from '../exceptions/InvalidRequestException';
-import NotFoundException from '../exceptions/NotFoundException';
+import InvalidRequestException from '../exception/InvalidRequestException';
+import NotFoundException from '../exception/NotFoundException';
 
 //Middleware to check the Request Body Object
 const validateRequest = (schema: Schema): RequestHandler => {
