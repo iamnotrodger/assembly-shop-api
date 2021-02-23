@@ -19,9 +19,7 @@ export const getTasks = async (
             where: { project: { projectID } },
         });
 
-        res.status(200).json({
-            tasks,
-        });
+        res.status(200).json(tasks);
     } catch (error) {
         next(error);
     }

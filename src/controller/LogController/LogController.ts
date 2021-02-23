@@ -15,7 +15,7 @@ export const getLogs = async (
         const logRepository = getCustomRepository(LogRepository);
         const logs = await logRepository.find({ taskID });
 
-        res.status(200).json({ logs });
+        res.status(200).json(logs);
     } catch (error) {
         next(error);
     }

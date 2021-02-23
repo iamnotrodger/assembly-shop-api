@@ -16,9 +16,7 @@ export const getProjects = async (
             where: { team: { teamID } },
         });
 
-        res.status(200).json({
-            projects,
-        });
+        res.status(200).json(projects);
     } catch (error) {
         next(error);
     }

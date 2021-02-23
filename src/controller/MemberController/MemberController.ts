@@ -14,7 +14,7 @@ export const getTeamMembers = async (
         const memberRepository = getCustomRepository(MemberRepository);
         const members = await memberRepository.findByTeamId(teamID);
 
-        res.status(200).json({ members });
+        res.status(200).json(members);
     } catch (error) {
         next(error);
     }
