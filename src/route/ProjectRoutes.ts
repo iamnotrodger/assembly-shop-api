@@ -4,6 +4,7 @@ import {
     createProject,
     deleteProject,
     getProjects,
+    getTeamProjects,
     updateProjectName,
 } from '../controller/ProjectController';
 import {
@@ -16,13 +17,16 @@ import validateRequest, { validateParams } from '../middleware/validateRequest';
 const ProjectRoutes = Router();
 const baseURI = '/team/:teamID/project';
 
+//Get User's Projects
+ProjectRoutes.get('/project', authenticateToken, getProjects);
+
 //Get Team Projects
 ProjectRoutes.get(
     baseURI,
     validateParams(teamIDSchema),
     authenticateToken,
     authenticateMember,
-    getProjects,
+    getTeamProjects,
 );
 
 // Create Project

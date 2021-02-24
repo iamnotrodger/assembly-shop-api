@@ -10,6 +10,13 @@ export default class MemberRepository extends Repository<Member> {
         });
     }
 
+    findProjects(userID: number) {
+        return this.find({
+            relations: ['team', 'team.projects'],
+            where: { user: { userID } },
+        });
+    }
+
     findByTeamId(teamID: number) {
         return this.find({
             relations: ['user'],
