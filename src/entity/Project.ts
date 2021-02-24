@@ -18,6 +18,9 @@ export default class Project {
     @Column()
     name?: string;
 
+    @Column({ name: 'team_id' })
+    teamID?: number;
+
     @ManyToOne(() => Team, (team) => team.projects, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'team_id' })
     team?: Team;
