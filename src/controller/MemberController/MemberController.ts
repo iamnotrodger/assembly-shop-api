@@ -30,7 +30,7 @@ export const addMember = async (
         const { userID } = req.body;
 
         const memberRepository = getCustomRepository(MemberRepository);
-        await memberRepository.createAndSave(teamID, userID);
+        await memberRepository.add(teamID, userID);
 
         res.status(200).json({
             message: `User (${userID}) has been added to Team (${teamID})`,
@@ -55,14 +55,11 @@ export const removeMember = async (
         const userID = Number(req.params.userID);
 
         const memberRepository = getCustomRepository(MemberRepository);
-        const { affected } = await memberRepository.delete({
-            team: { teamID },
-            user: { userID },
-        });
+        const { affected } = await memberRepository.subtract(teamID, userID);
 
         if (affected == 0) {
             throw new InvalidRequestException(
-                `Invalid Request: User (${userID}) does not exist/is not a member of the Team.`,
+                `Invalid Request: User (${userID}) does not exist or is not a member of the Team.`,
             );
         }
 

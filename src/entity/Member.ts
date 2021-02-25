@@ -18,6 +18,9 @@ export default class Member {
     @Column({ name: 'user_id' })
     userID?: number;
 
+    @Column({ name: 'team_id' })
+    teamID?: number;
+
     @ManyToOne(() => User, (user) => user.member, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user!: User;
