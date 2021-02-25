@@ -3,20 +3,6 @@ import Member from '../entity/Member';
 
 @EntityRepository(Member)
 export default class MemberRepository extends Repository<Member> {
-    findTeams(userID: number) {
-        return this.find({
-            relations: ['team'],
-            where: { user: { userID } },
-        });
-    }
-
-    findProjects(userID: number) {
-        return this.find({
-            relations: ['team', 'team.projects'],
-            where: { user: { userID } },
-        });
-    }
-
     findByTeamId(teamID: number) {
         return this.find({
             relations: ['user'],

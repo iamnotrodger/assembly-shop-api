@@ -15,11 +15,11 @@ export default class Project {
     @PrimaryGeneratedColumn({ name: 'project_id' })
     projectID!: number;
 
-    @Column()
-    name?: string;
-
     @Column({ name: 'team_id' })
     teamID?: number;
+
+    @Column()
+    name?: string;
 
     @ManyToOne(() => Team, (team) => team.projects, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'team_id' })

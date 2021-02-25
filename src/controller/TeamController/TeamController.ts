@@ -3,7 +3,6 @@ import { getCustomRepository } from 'typeorm';
 import Team from '../../entity/Team';
 import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
-import MemberRepository from '../../repository/MemberRepository';
 import TeamRepository from '../../repository/TeamRepository';
 
 export const getTeams = async (
@@ -14,8 +13,8 @@ export const getTeams = async (
     try {
         const { userID } = req.user as User;
 
-        const memberRepository = getCustomRepository(MemberRepository);
-        const teams = await memberRepository.findTeams(userID);
+        const teamRepository = getCustomRepository(TeamRepository);
+        const teams = await teamRepository.findTeams(userID);
 
         res.status(200).json(teams);
     } catch (error) {

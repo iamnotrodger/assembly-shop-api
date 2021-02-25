@@ -16,14 +16,14 @@ export default class Team {
     @PrimaryGeneratedColumn({ name: 'team_id' })
     teamID!: number;
 
+    @Column({ name: 'administrator_id', nullable: true })
+    administratorID?: number;
+
     @Column('text')
     name?: string;
 
     @Column({ name: 'num_members', nullable: true })
     numMembers?: number;
-
-    @Column({ name: 'administrator_id', nullable: true })
-    administratorID?: number;
 
     @ManyToOne(() => User, (user) => user.teams, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'administrator_id' })

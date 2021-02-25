@@ -3,7 +3,7 @@ import { getCustomRepository, getManager } from 'typeorm';
 import Project from '../../entity/Project';
 import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
-import MemberRepository from '../../repository/MemberRepository';
+import TeamRepository from '../../repository/TeamRepository';
 
 export const getProjects = async (
     req: Request,
@@ -13,8 +13,8 @@ export const getProjects = async (
     try {
         const { userID } = req.user as User;
 
-        const memberRepository = getCustomRepository(MemberRepository);
-        const projects = await memberRepository.findProjects(userID);
+        const teamRepository = getCustomRepository(TeamRepository);
+        const projects = await teamRepository.findProjects(userID);
 
         res.status(200).json(projects);
     } catch (error) {

@@ -1,4 +1,5 @@
 import {
+    Column,
     Entity,
     Index,
     JoinColumn,
@@ -13,6 +14,9 @@ import User from './User';
 export default class Member {
     @PrimaryGeneratedColumn({ name: 'member_id' })
     memberID!: number;
+
+    @Column({ name: 'user_id' })
+    userID?: number;
 
     @ManyToOne(() => User, (user) => user.member, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
