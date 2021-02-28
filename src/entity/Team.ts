@@ -29,7 +29,7 @@ export default class Team {
     @JoinColumn({ name: 'administrator_id' })
     administrator?: User;
 
-    @OneToMany(() => Member, (member) => member.team)
+    @OneToMany(() => Member, (member) => member.team, { cascade: true })
     members?: Member[];
 
     @OneToMany(() => Project, (project) => project.team)

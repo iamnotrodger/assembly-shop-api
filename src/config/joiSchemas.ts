@@ -20,6 +20,10 @@ export const teamIDSchema = Joi.object().keys({
 });
 export const memberSchema = userIDSchema.concat(teamIDSchema);
 
+export const teamSchema = nameSchema.keys({
+    members: Joi.array().items(userIDSchema),
+});
+
 // Project Schemas
 
 export const projectIDSchema = Joi.object().keys({

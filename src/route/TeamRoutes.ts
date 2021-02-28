@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { nameSchema, teamIDSchema } from '../config/joiSchemas';
+import { nameSchema, teamIDSchema, teamSchema } from '../config/joiSchemas';
 import {
     createTeam,
     deleteTeam,
@@ -16,7 +16,7 @@ const TeamRoutes = Router();
 
 TeamRoutes.get('', authenticateToken, getTeams);
 
-TeamRoutes.post('', authenticateToken, validateRequest(nameSchema), createTeam);
+TeamRoutes.post('', authenticateToken, validateRequest(teamSchema), createTeam);
 
 TeamRoutes.delete(
     '/:teamID',

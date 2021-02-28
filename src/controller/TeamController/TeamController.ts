@@ -30,14 +30,17 @@ export const createTeam = async (
     try {
         const { userID } = req.user as User;
         const { name } = req.body;
+        const members = req.body.members || [];
+        members.push({ userID });
 
         const team = new Team();
         team.name = name;
         team.administratorID = userID;
-        team.numMembers = 1;
+        team.members = members;
+        team.numMembers = members.length;
 
         const teamRepository = getCustomRepository(TeamRepository);
-        await teamRepository.createAndJoin(team);
+        await teamRepository.save(team);
 
         res.status(200).json({
             message: 'Team Created',
