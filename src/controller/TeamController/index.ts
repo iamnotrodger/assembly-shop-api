@@ -1,6 +1,7 @@
 export {
-    deleteTeam,
     createTeam,
+    deleteTeam,
     getTeams,
+    getTeamsByAdmin,
     updateTeamName,
 } from './TeamController';

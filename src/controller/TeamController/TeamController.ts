@@ -22,6 +22,23 @@ export const getTeams = async (
     }
 };
 
+export const getTeamsByAdmin = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { userID } = req.user as User;
+
+        const teamRepository = getCustomRepository(TeamRepository);
+        const teams = await teamRepository.findTeamsByAdmin(userID);
+
+        res.status(200).json(teams);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const createTeam = async (
     req: Request,
     res: Response,

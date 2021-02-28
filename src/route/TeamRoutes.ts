@@ -4,6 +4,7 @@ import {
     createTeam,
     deleteTeam,
     getTeams,
+    getTeamsByAdmin,
     updateTeamName,
 } from '../controller/TeamController';
 import {
@@ -17,6 +18,8 @@ const TeamRoutes = Router();
 TeamRoutes.get('', authenticateToken, getTeams);
 
 TeamRoutes.post('', authenticateToken, validateRequest(teamSchema), createTeam);
+
+TeamRoutes.get('/admin', authenticateToken, getTeamsByAdmin);
 
 TeamRoutes.delete(
     '/:teamID',

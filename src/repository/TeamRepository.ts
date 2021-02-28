@@ -11,6 +11,10 @@ export default class TeamRepository extends Repository<Team> {
             .getMany();
     }
 
+    findTeamsByAdmin(administratorID: number) {
+        return this.find({ administratorID });
+    }
+
     findProjects(userID: number) {
         return this.createQueryBuilder('team')
             .innerJoin('team.members', 'member')
