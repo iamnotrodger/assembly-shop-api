@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { memberSchema, teamIDSchema, userIDSchema } from '../config/joiSchemas';
+import { memberSchema, teamIDSchema, userSchema } from '../config/joiSchemas';
 import {
     addMember,
     getTeamMembers,
@@ -25,7 +25,7 @@ MemberRoutes.get(
 MemberRoutes.post(
     '/:teamID/member',
     validateParams(teamIDSchema),
-    validateRequest(userIDSchema),
+    validateRequest(userSchema),
     authenticateToken,
     authenticateAdmin,
     addMember,

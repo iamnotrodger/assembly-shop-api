@@ -7,7 +7,7 @@ export default class MemberRepository extends Repository<Member> {
     findByTeamId(teamID: number) {
         return this.find({
             relations: ['user'],
-            where: { team: teamID },
+            where: { teamID },
         });
     }
 

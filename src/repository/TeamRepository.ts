@@ -1,5 +1,4 @@
 import { EntityRepository, Repository } from 'typeorm';
-import Member from '../entity/Member';
 import Team from '../entity/Team';
 
 @EntityRepository(Team)
@@ -20,7 +19,8 @@ export default class TeamRepository extends Repository<Team> {
             .innerJoin('team.members', 'member')
             .where('member.user_id = :userID', { userID })
             .leftJoinAndSelect('team.projects', 'project')
-            .orderBy('project.projectID', 'ASC')
+            .orderBy('team.teamID', 'ASC')
+            .addOrderBy('project.projectID', 'ASC')
             .getMany();
     }
 }

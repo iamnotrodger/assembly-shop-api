@@ -5,8 +5,16 @@ export const nameSchema = Joi.object().keys({
     name: Joi.string().required(),
 });
 
-export const userIDSchema = Joi.object().keys({
+export const userSchema = Joi.object().keys({
     userID: Joi.number().required(),
+    providerID: Joi.string().allow(null),
+    provider: Joi.string().allow(null),
+    email: Joi.string().allow(null),
+    name: Joi.string().allow(null),
+    givenName: Joi.string().allow(null),
+    familyName: Joi.string().allow(null),
+    picture: Joi.string().allow(null),
+    joined: Joi.date().allow(null),
 });
 
 export const userEmailSchema = Joi.object().keys({
@@ -18,10 +26,10 @@ export const userEmailSchema = Joi.object().keys({
 export const teamIDSchema = Joi.object().keys({
     teamID: Joi.number().required(),
 });
-export const memberSchema = userIDSchema.concat(teamIDSchema);
+export const memberSchema = userSchema.concat(teamIDSchema);
 
 export const teamSchema = nameSchema.keys({
-    members: Joi.array().items(userIDSchema),
+    members: Joi.array().items(userSchema),
 });
 
 // Project Schemas
@@ -37,7 +45,7 @@ export const projectSchema = projectIDSchema.concat(teamIDSchema);
 export const taskSchema = Joi.object().keys({
     title: Joi.string().required(),
     description: Joi.string(),
-    assignee: userIDSchema,
+    assignee: userSchema,
 });
 
 export const taskIDSchema = projectSchema.keys({
@@ -45,7 +53,7 @@ export const taskIDSchema = projectSchema.keys({
 });
 
 export const assignTaskSchema = Joi.object().keys({
-    assignee: userIDSchema,
+    assignee: userSchema,
 });
 
 export const updateTaskQuerySchema = Joi.object().keys({

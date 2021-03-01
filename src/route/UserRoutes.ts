@@ -9,6 +9,11 @@ const UserRoutes = Router();
 
 UserRoutes.get('', authenticateToken, getUser);
 
-UserRoutes.get('/find', validateQuery(userEmailSchema), getUsersByEmail);
+UserRoutes.get(
+    '/find',
+    authenticateToken,
+    validateQuery(userEmailSchema),
+    getUsersByEmail,
+);
 
 export default UserRoutes;
