@@ -3,6 +3,7 @@ import { nameSchema, projectSchema, teamIDSchema } from '../config/joiSchemas';
 import {
     createProject,
     deleteProject,
+    getProject,
     getProjects,
     getTeamProjects,
     updateProjectName,
@@ -36,6 +37,15 @@ ProjectRoutes.post(
     authenticateToken,
     authenticateAdmin,
     createProject,
+);
+
+// Get Project
+ProjectRoutes.get(
+    baseURI + '/:projectID',
+    validateParams(projectSchema),
+    authenticateToken,
+    authenticateMember,
+    getProject,
 );
 
 //Delete Project

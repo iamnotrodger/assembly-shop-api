@@ -5,6 +5,32 @@ import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
 import TeamRepository from '../../repository/TeamRepository';
 
+export const getProject = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { teamID, projectID } = req.params;
+
+        const projectRepository = getManager().getRepository(Project);
+        const project = await projectRepository.findOne({
+            relations: ['team'],
+            where: { teamID, projectID },
+        });
+
+        if (!project) {
+            throw new InvalidRequestException(
+                `Team does not have Project (${projectID})`,
+            );
+        }
+
+        res.status(200).json(project);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getProjects = async (
     req: Request,
     res: Response,

@@ -1,6 +1,7 @@
 export {
     createProject,
     deleteProject,
+    getProject,
     getProjects,
     getTeamProjects,
     updateProjectName,
