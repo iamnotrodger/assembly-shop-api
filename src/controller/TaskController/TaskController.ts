@@ -3,6 +3,7 @@ import { getCustomRepository, getManager } from 'typeorm';
 import Member from '../../entity/Member';
 import Task from '../../entity/Task';
 import InvalidRequestException from '../../exception/InvalidRequestException';
+import NotAuthorizedException from '../../exception/NotAuthorizedException';
 import TaskRepository from '../../repository/TaskRepository';
 
 export const getTasks = async (
@@ -242,8 +243,9 @@ export const validateTaskBelongsToUser = async (
         if (task) {
             next();
         } else {
-            throw new InvalidRequestException(
-                `Invalid Request: Task (${taskID}) does not belong to User.`,
+            throw new NotAuthorizedException(
+                403,
+                `Not Authorized: Task (${taskID}) does not belong to User.`,
             );
         }
     } catch (error) {

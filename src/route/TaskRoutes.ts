@@ -85,7 +85,7 @@ TaskRoutes.put(
 
 //Set Task Completed
 TaskRoutes.put(
-    baseURI + '/:taskID/complete',
+    '/task/:taskID/complete',
     validateParams(taskIDSchema),
     authenticateToken,
     validateTaskBelongsToUser,
@@ -94,7 +94,7 @@ TaskRoutes.put(
 
 //Set Task Incomplete
 TaskRoutes.put(
-    baseURI + '/:taskID/incomplete',
+    '/task/:taskID/incomplete',
     validateParams(taskIDSchema),
     authenticateToken,
     validateTaskBelongsToUser,

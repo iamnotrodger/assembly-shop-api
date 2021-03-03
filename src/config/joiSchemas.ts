@@ -66,6 +66,10 @@ export const updateTaskSchema = Joi.object().keys({
 
 // Log Schemas
 
-export const logIDSchema = taskIDSchema.keys({
+export const logTaskIDSchema = Joi.object().keys({
+    taskID: Joi.number().required(),
+});
+
+export const logIDSchema = logTaskIDSchema.keys({
     logID: Joi.number().required(),
 });
