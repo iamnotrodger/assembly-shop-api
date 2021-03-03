@@ -3,6 +3,7 @@ import { getCustomRepository, getManager } from 'typeorm';
 import Project from '../../entity/Project';
 import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
+import NotFoundException from '../../exception/NotFoundException';
 import TeamRepository from '../../repository/TeamRepository';
 
 export const getProject = async (
@@ -20,7 +21,7 @@ export const getProject = async (
         });
 
         if (!project) {
-            throw new InvalidRequestException(
+            throw new NotFoundException(
                 `Team does not have Project (${projectID})`,
             );
         }
