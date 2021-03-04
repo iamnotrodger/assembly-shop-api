@@ -1,9 +1,5 @@
 import { Router } from 'express';
-import {
-    logIDSchema,
-    logTaskIDSchema,
-    taskIDSchema,
-} from '../config/joiSchemas';
+import { logIDSchema, taskIDSchema } from '../config/joiSchemas';
 import {
     deleteLog,
     getLogs,
@@ -11,22 +7,16 @@ import {
     stopLog,
 } from '../controller/LogController';
 import { validateTaskBelongsToUser } from '../controller/TaskController';
+import { validateTaskAction } from '../controller/TaskController/TaskController';
 import { authenticateToken } from '../middleware/authentication';
 import { validateParams } from '../middleware/validateRequest';
 
 const LogRoutes = Router();
-const baseURI = '/task/:taskID/log';
-
-LogRoutes.get(
-    baseURI,
-    validateParams(taskIDSchema),
-    authenticateToken,
-    getLogs,
-);
+const baseURI = '/task/:taskID';
 
 LogRoutes.post(
     baseURI + '/start',
-    validateParams(logTaskIDSchema),
+    validateParams(taskIDSchema),
     authenticateToken,
     validateTaskBelongsToUser,
     startLog,
@@ -34,14 +24,22 @@ LogRoutes.post(
 
 LogRoutes.put(
     baseURI + '/stop',
-    validateParams(logTaskIDSchema),
+    validateParams(taskIDSchema),
     authenticateToken,
     validateTaskBelongsToUser,
     stopLog,
 );
 
+LogRoutes.get(
+    baseURI + '/log',
+    validateParams(taskIDSchema),
+    authenticateToken,
+    validateTaskAction,
+    getLogs,
+);
+
 LogRoutes.delete(
-    baseURI + '/:logID',
+    baseURI + '/log/:logID',
     validateParams(logIDSchema),
     authenticateToken,
     validateTaskBelongsToUser,

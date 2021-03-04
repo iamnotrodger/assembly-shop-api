@@ -17,6 +17,7 @@ import {
 import {
     setTaskCompleted,
     setTaskIncomplete,
+    validateTaskAction,
     validateTaskBelongsToUser,
     verifyAssigneeIsTeamMember,
 } from '../controller/TaskController/TaskController';
@@ -54,31 +55,31 @@ TaskRoutes.post(
 
 //Delete Task
 TaskRoutes.delete(
-    baseURI + '/:taskID',
+    '/task/:taskID',
     validateParams(taskIDSchema),
     authenticateToken,
-    authenticateMember,
+    validateTaskAction,
     deleteTask,
 );
 
 //Update Task, has query fields
 TaskRoutes.put(
-    baseURI + '/:taskID',
+    '/task/:taskID',
     validateParams(taskIDSchema),
     validateQuery(updateTaskQuerySchema),
     validateRequest(updateTaskSchema),
     authenticateToken,
-    authenticateMember,
+    validateTaskAction,
     updateTaskInfo,
 );
 
 //Assign Task
 TaskRoutes.put(
-    baseURI + '/:taskID/assign',
+    '/:taskID/assign',
     validateParams(taskIDSchema),
     validateRequest(assignTaskSchema),
     authenticateToken,
-    authenticateMember,
+    validateTaskAction,
     verifyAssigneeIsTeamMember,
     assignTask,
 );

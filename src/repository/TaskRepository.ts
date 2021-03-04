@@ -31,4 +31,17 @@ export default class TaskRepository extends Repository<Task> {
             return task;
         });
     }
+
+    //* finds the task if the user is s member of the project */
+    findTaskByMember(taskID: number, userID: number) {
+        return this.createQueryBuilder('task')
+            .innerJoin('task.project', 'project')
+            .innerJoin('project.team', 'team')
+            .innerJoin('team.members', 'member')
+            .where('task.task_id = :taskID AND member.user_id = :userID', {
+                taskID,
+                userID,
+            })
+            .getOne();
+    }
 }
