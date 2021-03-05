@@ -198,36 +198,6 @@ export const setTaskIncomplete = async (
     }
 };
 
-export const verifyAssigneeIsTeamMember = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const teamID = req.body.teamID | (req.params.teamID as any);
-        const { assignee } = req.body;
-
-        if (!assignee) {
-            next();
-        }
-
-        const memberRepository = getManager().getRepository(Member);
-        const member = await memberRepository.findOne({
-            where: { team: { teamID }, user: assignee },
-        });
-
-        if (member) {
-            next();
-        } else {
-            throw new InvalidRequestException(
-                `Invalid Request: User (${assignee.userID}) is not a part of Team (${teamID}).`,
-            );
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
 export const validateTaskBelongsToUser = async (
     req: Request,
     res: Response,
@@ -271,6 +241,68 @@ export const validateTaskAction = async (
             next();
         } else {
             throw new NotAuthorizedException(403, 'Not Authorized Member.');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const validateAssignee = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const taskID = Number(req.params.taskID);
+        const { assignee } = req.body;
+
+        if (!assignee) {
+            next();
+            return;
+        }
+
+        const { userID } = assignee;
+
+        const taskRepository = getCustomRepository(TaskRepository);
+        const task = await taskRepository.findTaskByMember(taskID, userID);
+
+        if (task) {
+            next();
+        } else {
+            throw new InvalidRequestException(
+                `Invalid Request: Assignee ${userID} is not a member of the team.`,
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const validateAssigneeByTeamID = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const teamID = req.body.teamID | (req.params.teamID as any);
+        const { assignee } = req.body;
+
+        if (!assignee) {
+            next();
+            return;
+        }
+
+        const memberRepository = getManager().getRepository(Member);
+        const member = await memberRepository.findOne({
+            where: { team: { teamID }, user: assignee },
+        });
+
+        if (member) {
+            next();
+        } else {
+            throw new InvalidRequestException(
+                `Invalid Request: Assignee ${assignee.userID} is not a member of the team.`,
+            );
         }
     } catch (error) {
         next(error);

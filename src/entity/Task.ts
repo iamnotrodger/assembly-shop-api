@@ -29,7 +29,7 @@ export default class Task {
     @Column({ name: 'total_time' })
     totalTime?: number;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'assignee' })
     assignee?: User;
 

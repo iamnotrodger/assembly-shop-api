@@ -53,7 +53,7 @@ export const taskIDSchema = Joi.object().keys({
 });
 
 export const assignTaskSchema = Joi.object().keys({
-    assignee: userSchema,
+    assignee: userSchema.required(),
 });
 
 export const updateTaskQuerySchema = Joi.object().keys({

@@ -6,6 +6,8 @@ export {
     setTaskCompleted,
     setTaskIncomplete,
     updateTaskInfo,
+    validateAssignee,
+    validateAssigneeByTeamID,
+    validateTaskAction,
     validateTaskBelongsToUser,
-    verifyAssigneeIsTeamMember,
 } from './TaskController';

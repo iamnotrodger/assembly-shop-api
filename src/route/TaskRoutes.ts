@@ -12,15 +12,14 @@ import {
     createTask,
     deleteTask,
     getTasks,
-    updateTaskInfo,
-} from '../controller/TaskController';
-import {
     setTaskCompleted,
     setTaskIncomplete,
+    updateTaskInfo,
+    validateAssignee,
+    validateAssigneeByTeamID,
     validateTaskAction,
     validateTaskBelongsToUser,
-    verifyAssigneeIsTeamMember,
-} from '../controller/TaskController/TaskController';
+} from '../controller/TaskController';
 import {
     authenticateMember,
     authenticateToken,
@@ -49,7 +48,7 @@ TaskRoutes.post(
     validateRequest(taskSchema),
     authenticateToken,
     authenticateMember,
-    verifyAssigneeIsTeamMember,
+    validateAssigneeByTeamID,
     createTask,
 );
 
@@ -75,12 +74,12 @@ TaskRoutes.put(
 
 //Assign Task
 TaskRoutes.put(
-    '/:taskID/assign',
+    '/task/:taskID/assign',
     validateParams(taskIDSchema),
     validateRequest(assignTaskSchema),
     authenticateToken,
     validateTaskAction,
-    verifyAssigneeIsTeamMember,
+    validateAssignee,
     assignTask,
 );
 
