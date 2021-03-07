@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { logIDSchema, taskIDSchema } from '../config/joiSchemas';
+import { logIDSchema, logTimeSchema, taskIDSchema } from '../config/joiSchemas';
 import {
     deleteLog,
     getLogs,
@@ -9,7 +9,7 @@ import {
 import { validateTaskBelongsToUser } from '../controller/TaskController';
 import { validateTaskAction } from '../controller/TaskController/TaskController';
 import { authenticateToken } from '../middleware/authentication';
-import { validateParams } from '../middleware/validateRequest';
+import validateRequest, { validateParams } from '../middleware/validateRequest';
 
 const LogRoutes = Router();
 const baseURI = '/task/:taskID';
@@ -17,6 +17,7 @@ const baseURI = '/task/:taskID';
 LogRoutes.post(
     baseURI + '/start',
     validateParams(taskIDSchema),
+    validateRequest(logTimeSchema),
     authenticateToken,
     validateTaskBelongsToUser,
     startLog,
@@ -25,6 +26,7 @@ LogRoutes.post(
 LogRoutes.put(
     baseURI + '/stop',
     validateParams(taskIDSchema),
+    validateRequest(logTimeSchema),
     authenticateToken,
     validateTaskBelongsToUser,
     stopLog,

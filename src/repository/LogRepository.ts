@@ -4,31 +4,29 @@ import Task from '../entity/Task';
 
 @EntityRepository(Log)
 export default class LogRepository extends Repository<Log> {
-    start(taskID: number) {
+    start(taskID: number, time: Date) {
         return this.manager.transaction(async (transactionManager) => {
             const log = new Log();
             log.task = { taskID };
-            log.startTime = new Date();
+            log.startTime = time;
 
             await transactionManager.save(log);
             await transactionManager.update(Task, taskID, { activeLog: log });
-
-            return log;
         });
     }
 
-    stop(taskID: number) {
+    stop(taskID: number, time: Date) {
         return this.manager.transaction(async (transactionManager) => {
             const task = await transactionManager.findOne(Task, {
                 relations: ['activeLog'],
                 where: { taskID },
             });
 
-            let log;
+            let totalTime;
 
             if (task && task.activeLog) {
                 const { activeLog } = task;
-                activeLog.endTime = new Date();
+                activeLog.endTime = time;
 
                 const { logID, endTime, startTime } = activeLog;
                 const total = endTime.getTime() - startTime!.getTime();
@@ -39,9 +37,10 @@ export default class LogRepository extends Repository<Log> {
                 await transactionManager.update(Log, logID, activeLog);
                 await transactionManager.update(Task, taskID, task);
 
-                log = activeLog;
+                totalTime = task.totalTime;
             }
-            return log;
+
+            return totalTime;
         });
     }
 

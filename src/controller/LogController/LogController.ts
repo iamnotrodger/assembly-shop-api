@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getCustomRepository, getManager } from 'typeorm';
-import Task from '../../entity/Task';
+import { getCustomRepository } from 'typeorm';
 import InvalidRequestException from '../../exception/InvalidRequestException';
 import LogRepository from '../../repository/LogRepository';
 
@@ -28,14 +27,12 @@ export const startLog = async (
 ) => {
     try {
         const taskID = Number(req.params.taskID);
+        const { time } = req.body;
 
         const logRepository = getCustomRepository(LogRepository);
-        const log = await logRepository.start(taskID);
+        await logRepository.start(taskID, time);
 
-        res.status(200).json({
-            message: 'Log Started',
-            log,
-        });
+        res.status(200).json({ message: 'Log Started' });
     } catch (error) {
         next(error);
     }
@@ -48,11 +45,12 @@ export const stopLog = async (
 ) => {
     try {
         const taskID = Number(req.params.taskID);
+        const { time } = req.body;
 
         const logRepository = getCustomRepository(LogRepository);
-        const log = await logRepository.stop(taskID);
+        const total = await logRepository.stop(taskID, new Date(time));
 
-        if (!log) {
+        if (total == null) {
             throw new InvalidRequestException(
                 `Invalid Request: Task (${taskID}) does not exist or task does not have an active log.`,
             );
@@ -60,7 +58,7 @@ export const stopLog = async (
 
         res.status(200).json({
             message: 'Log Ended',
-            log,
+            total,
         });
     } catch (error) {
         next(error);
