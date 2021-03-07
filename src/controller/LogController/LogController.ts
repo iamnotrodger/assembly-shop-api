@@ -48,17 +48,21 @@ export const stopLog = async (
         const { time } = req.body;
 
         const logRepository = getCustomRepository(LogRepository);
-        const total = await logRepository.stop(taskID, new Date(time));
+        const result = await logRepository.stop(taskID, new Date(time));
 
-        if (total == null) {
+        console.log(result);
+
+        if (!result) {
             throw new InvalidRequestException(
                 `Invalid Request: Task (${taskID}) does not exist or task does not have an active log.`,
             );
         }
 
+        const { total, log } = result!;
         res.status(200).json({
             message: 'Log Ended',
             total,
+            log,
         });
     } catch (error) {
         next(error);

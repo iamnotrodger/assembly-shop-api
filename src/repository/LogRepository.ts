@@ -22,7 +22,7 @@ export default class LogRepository extends Repository<Log> {
                 where: { taskID },
             });
 
-            let totalTime;
+            let log;
 
             if (task && task.activeLog) {
                 const { activeLog } = task;
@@ -37,10 +37,10 @@ export default class LogRepository extends Repository<Log> {
                 await transactionManager.update(Log, logID, activeLog);
                 await transactionManager.update(Task, taskID, task);
 
-                totalTime = task.totalTime;
+                return { total: task.totalTime!, log: activeLog };
             }
 
-            return totalTime;
+            return log;
         });
     }
 
