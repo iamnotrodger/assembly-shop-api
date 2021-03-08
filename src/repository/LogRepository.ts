@@ -37,7 +37,7 @@ export default class LogRepository extends Repository<Log> {
                 await transactionManager.update(Log, logID, activeLog);
                 await transactionManager.update(Task, taskID, task);
 
-                return { total: task.totalTime!, log: activeLog };
+                return { totalTime: task.totalTime!, log: activeLog };
             }
 
             return log;

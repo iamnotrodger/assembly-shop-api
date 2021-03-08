@@ -10,6 +10,8 @@ export default class TaskRepository extends Repository<Task> {
                 where: { taskID },
             });
 
+            let totalTime;
+
             if (task) {
                 const { activeLog } = task;
                 if (activeLog) {
@@ -26,9 +28,11 @@ export default class TaskRepository extends Repository<Task> {
 
                 task.completed = true;
                 await transactionManager.save(task);
+
+                totalTime = task.totalTime;
             }
 
-            return task;
+            return totalTime;
         });
     }
 

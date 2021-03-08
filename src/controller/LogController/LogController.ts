@@ -56,11 +56,9 @@ export const stopLog = async (
             );
         }
 
-        const { total, log } = result!;
         res.status(200).json({
             message: 'Log Ended',
-            total,
-            log,
+            ...result,
         });
     } catch (error) {
         next(error);

@@ -155,9 +155,9 @@ export const setTaskCompleted = async (
         const taskID = Number(req.params.taskID);
 
         const taskRepository = getCustomRepository(TaskRepository);
-        const log = await taskRepository.completed(taskID);
+        const totalTime = await taskRepository.completed(taskID);
 
-        if (!log) {
+        if (totalTime == null) {
             throw new InvalidRequestException(
                 `Invalid Request: Task (${taskID}) does not exist.`,
             );
@@ -165,7 +165,7 @@ export const setTaskCompleted = async (
 
         res.status(200).json({
             message: `Task (${taskID}) set to completed.`,
-            log,
+            totalTime,
         });
     } catch (error) {
         next(error);
