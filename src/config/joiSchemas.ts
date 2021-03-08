@@ -44,8 +44,8 @@ export const projectSchema = projectIDSchema.concat(teamIDSchema);
 
 export const taskSchema = Joi.object().keys({
     title: Joi.string().required(),
-    description: Joi.string(),
-    assignee: userSchema,
+    description: Joi.string().allow(null, ''),
+    assignee: userSchema.allow(null),
 });
 
 export const taskIDSchema = Joi.object().keys({

@@ -19,6 +19,7 @@ export const getTasks = async (
         const tasks = await taskRepository.find({
             relations: ['assignee', 'activeLog'],
             where: { project: { projectID } },
+            order: { taskID: 'DESC' },
         });
 
         res.status(200).json(tasks);

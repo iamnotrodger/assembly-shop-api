@@ -50,8 +50,6 @@ export const stopLog = async (
         const logRepository = getCustomRepository(LogRepository);
         const result = await logRepository.stop(taskID, new Date(time));
 
-        console.log(result);
-
         if (!result) {
             throw new InvalidRequestException(
                 `Invalid Request: Task (${taskID}) does not exist or task does not have an active log.`,
