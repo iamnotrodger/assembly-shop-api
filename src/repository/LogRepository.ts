@@ -12,6 +12,8 @@ export default class LogRepository extends Repository<Log> {
 
             await transactionManager.save(log);
             await transactionManager.update(Task, taskID, { activeLog: log });
+
+            return log;
         });
     }
 
@@ -37,7 +39,7 @@ export default class LogRepository extends Repository<Log> {
                 await transactionManager.update(Log, logID, activeLog);
                 await transactionManager.update(Task, taskID, task);
 
-                return { totalTime: task.totalTime!, log: activeLog };
+                log = { totalTime: task.totalTime!, log: activeLog };
             }
 
             return log;
@@ -54,16 +56,29 @@ export default class LogRepository extends Repository<Log> {
                 .returning('*')
                 .execute();
 
-            if (result.affected! > 0 && result.raw[0].end_time) {
+            const successful = result.affected! > 0;
+            let success: { successful: boolean; totalTime?: number } = {
+                successful,
+            };
+
+            if (successful && result.raw[0].end_time) {
                 const { task_id, start_time, end_time } = result.raw[0];
                 const total = end_time.getTime() - start_time.getTime();
 
-                await transactionManager.update(Task, task_id, {
-                    totalTime: () => `total_time - ${total}`,
-                });
+                const updateResult = await transactionManager
+                    .createQueryBuilder()
+                    .update(Task)
+                    .where('task_id = :task_id', {
+                        task_id,
+                    })
+                    .set({ totalTime: () => `total_time - ${total}` })
+                    .returning('total_time')
+                    .execute();
+
+                success.totalTime = updateResult.raw[0].total_time;
             }
 
-            return result;
+            return success;
         });
     }
 }

@@ -12,7 +12,10 @@ export const getLogs = async (
         const taskID = Number(req.params.taskID);
 
         const logRepository = getCustomRepository(LogRepository);
-        const logs = await logRepository.find({ taskID });
+        const logs = await logRepository.find({
+            where: { taskID },
+            order: { logID: 'DESC' },
+        });
 
         res.status(200).json(logs);
     } catch (error) {
@@ -30,9 +33,9 @@ export const startLog = async (
         const { time } = req.body;
 
         const logRepository = getCustomRepository(LogRepository);
-        await logRepository.start(taskID, time);
+        const log = await logRepository.start(taskID, time);
 
-        res.status(200).json({ message: 'Log Started' });
+        res.status(200).json({ message: 'Log Started', log });
     } catch (error) {
         next(error);
     }
@@ -74,18 +77,22 @@ export const deleteLog = async (
         const logID = Number(req.params.logID);
 
         const logRepository = getCustomRepository(LogRepository);
-        const { affected } = await logRepository.deleteAndDecrementTaskTime(
-            logID,
-        );
+        const {
+            successful,
+            totalTime,
+        } = await logRepository.deleteAndDecrementTaskTime(logID);
 
-        if (affected == 0) {
+        if (!successful) {
             throw new InvalidRequestException(
                 `Invalid Request: Log (${logID}) does not exist.`,
             );
         }
 
+        console.log(totalTime);
+
         res.status(200).json({
             message: `Deleted Log (${logID})`,
+            totalTime,
         });
     } catch (error) {
         next(error);
