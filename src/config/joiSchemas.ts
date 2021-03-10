@@ -61,7 +61,7 @@ export const updateTaskQuerySchema = Joi.object().keys({
 });
 
 export const updateTaskSchema = Joi.object().keys({
-    newValue: Joi.string().required(),
+    value: Joi.string().required(),
 });
 
 // Log Schemas

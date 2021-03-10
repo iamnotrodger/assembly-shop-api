@@ -93,10 +93,10 @@ export const updateTaskInfo = async (
     try {
         const taskID = Number(req.params.taskID);
         const field = req.query.field;
-        const { newValue } = req.body;
+        const { value } = req.body;
 
         const updateInfo =
-            field === 'title' ? { title: newValue } : { description: newValue };
+            field === 'title' ? { title: value } : { description: value };
 
         const taskRepository = getCustomRepository(TaskRepository);
         const { affected } = await taskRepository.update(taskID, updateInfo);
@@ -108,7 +108,7 @@ export const updateTaskInfo = async (
         }
 
         res.status(200).json({
-            message: `Updated Task ${field} to '${newValue}'`,
+            message: `Updated Task ${field} to '${value}'`,
         });
     } catch (error) {
         next(error);
