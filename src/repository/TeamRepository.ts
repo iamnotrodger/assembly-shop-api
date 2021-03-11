@@ -19,8 +19,8 @@ export default class TeamRepository extends Repository<Team> {
             .innerJoin('team.members', 'member')
             .where('member.user_id = :userID', { userID })
             .leftJoinAndSelect('team.projects', 'project')
-            .orderBy('team.teamID', 'ASC')
-            .addOrderBy('project.projectID', 'ASC')
+            .orderBy('team.teamID', 'DESC')
+            .addOrderBy('project.projectID', 'DESC')
             .getMany();
     }
 }
