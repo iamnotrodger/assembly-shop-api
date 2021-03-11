@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
     nameSchema,
     projectIDSchema,
-    teamIDSchema,
+    projectSchema,
 } from '../config/joiSchemas';
 import {
     createProject,
@@ -15,6 +15,7 @@ import { getTasks } from '../controller/TaskController';
 import {
     authenticateProjectAdmin,
     authenticateProjectMember,
+    authenticateTeamAdmin,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, { validateParams } from '../middleware/validateRequest';
@@ -24,13 +25,12 @@ const ProjectRoutes = Router();
 //Get User's Projects
 ProjectRoutes.get('', authenticateToken, getProjects);
 
-//TODO: remove teamID from URI
 // Create Project
 ProjectRoutes.post(
-    '/team/:teamID',
-    validateParams(teamIDSchema),
-    validateRequest(nameSchema),
+    '',
+    validateRequest(projectSchema),
     authenticateToken,
+    authenticateTeamAdmin,
     createProject,
 );
 

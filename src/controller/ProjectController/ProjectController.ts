@@ -75,8 +75,7 @@ export const createProject = async (
     next: NextFunction,
 ) => {
     try {
-        const teamID = Number(req.params.teamID);
-        const name = req.body.name;
+        const { teamID, name } = req.body;
 
         const project = new Project();
         project.team = { teamID };

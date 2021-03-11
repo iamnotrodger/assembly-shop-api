@@ -83,7 +83,7 @@ TaskRoutes.put(
 
 //Set Task Incomplete
 TaskRoutes.put(
-    '/task/:taskID/incomplete',
+    '/:taskID/incomplete',
     validateParams(taskIDSchema),
     authenticateToken,
     authenticateTaskAction,

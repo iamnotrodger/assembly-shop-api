@@ -194,7 +194,7 @@ export const authenticateLogAction = async (
 
         const { task } = log;
 
-        if (task?.assigneeID === userID) {
+        if (task!.assigneeID === userID) {
             next();
             return;
         } else {
