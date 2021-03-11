@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { getCustomRepository, getManager } from 'typeorm';
-import Member from '../../entity/Member';
+import { getCustomRepository } from 'typeorm';
 import Task from '../../entity/Task';
-import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
-import NotAuthorizedException from '../../exception/NotAuthorizedException';
+import MemberRepository from '../../repository/MemberRepository';
 import TaskRepository from '../../repository/TaskRepository';
 
 export const getTasks = async (
@@ -34,8 +32,7 @@ export const createTask = async (
     next: NextFunction,
 ) => {
     try {
-        const projectID = Number(req.params.projectID);
-        const { title, description, assignee } = req.body;
+        const { projectID, title, description, assignee } = req.body;
 
         const task = new Task();
         task.title = title;
@@ -199,55 +196,6 @@ export const setTaskIncomplete = async (
     }
 };
 
-export const validateTaskBelongsToUser = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const taskID = Number(req.params.taskID);
-
-        const taskRepository = getCustomRepository(TaskRepository);
-        const task = await taskRepository.findOne({
-            where: { taskID, assignee: req.user },
-        });
-
-        if (task) {
-            next();
-        } else {
-            throw new NotAuthorizedException(
-                403,
-                `Not Authorized: Task (${taskID}) does not belong to User.`,
-            );
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-//** Validate if the User making the action is a Team Member of the Project*/
-export const validateTaskAction = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const taskID = Number(req.params.taskID);
-        const { userID } = req.user as User;
-
-        const taskRepository = getCustomRepository(TaskRepository);
-        const task = await taskRepository.findTaskByMember(taskID, userID);
-
-        if (task) {
-            next();
-        } else {
-            throw new NotAuthorizedException(403, 'Not Authorized Member.');
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
 export const validateAssignee = async (
     req: Request,
     res: Response,
@@ -271,7 +219,7 @@ export const validateAssignee = async (
             next();
         } else {
             throw new InvalidRequestException(
-                `Invalid Request: Assignee ${userID} is not a member of the team.`,
+                `Invalid Request: Assignee ${userID} is not a member of the Project.`,
             );
         }
     } catch (error) {
@@ -279,30 +227,32 @@ export const validateAssignee = async (
     }
 };
 
-export const validateAssigneeByTeamID = async (
+export const validateAssigneeOnCreate = async (
     req: Request,
     res: Response,
     next: NextFunction,
 ) => {
     try {
-        const teamID = req.body.teamID | (req.params.teamID as any);
-        const { assignee } = req.body;
+        const { assignee, projectID } = req.body;
 
         if (!assignee) {
             next();
             return;
         }
 
-        const memberRepository = getManager().getRepository(Member);
-        const member = await memberRepository.findOne({
-            where: { team: { teamID }, user: assignee },
-        });
+        const { userID } = assignee;
+
+        const memberRepository = getCustomRepository(MemberRepository);
+        const member = await memberRepository.findOneProjectMember(
+            projectID,
+            userID,
+        );
 
         if (member) {
             next();
         } else {
             throw new InvalidRequestException(
-                `Invalid Request: Assignee ${assignee.userID} is not a member of the team.`,
+                `Invalid Request: Assignee ${userID} is not a member of the Project.`,
             );
         }
     } catch (error) {

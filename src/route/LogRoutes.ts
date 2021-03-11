@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { logIDSchema } from '../config/joiSchemas';
 import { deleteLog } from '../controller/LogController';
-import { validateTaskBelongsToUser } from '../controller/TaskController';
 import { authenticateToken } from '../middleware/authentication';
 import { validateParams } from '../middleware/validateRequest';
 

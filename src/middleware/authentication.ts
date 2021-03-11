@@ -10,6 +10,7 @@ import User from '../entity/User';
 import NotAuthorizedException from '../exception/NotAuthorizedException';
 import MemberRepository from '../repository/MemberRepository';
 import ProjectRepository from '../repository/ProjectRepository';
+import TaskRepository from '../repository/TaskRepository';
 
 // Checks and validate access-token sent it with the request. Store User in req.user for the next middleware
 export const authenticateToken = (
@@ -116,8 +117,6 @@ export const authenticateProjectMember = async (
             userID,
         );
 
-        console.log(member);
-
         if (member) {
             next();
         } else {
@@ -125,5 +124,51 @@ export const authenticateProjectMember = async (
         }
     } catch (error) {
         next(error);
+    }
+};
+
+//** Authenticate if the task belongs to the user or the User is a Project Admin */
+export const authenticateTaskAction = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const taskID = Number(req.params.taskID);
+        const { userID } = req.user as User;
+
+        const taskRepository = getCustomRepository(TaskRepository);
+        const task = await taskRepository.findAssigneeOrAdmin(taskID, userID);
+
+        if (task) {
+            next();
+            return;
+        } else {
+            throw new NotAuthorizedException(
+                403,
+                'Not Authorized: Task does belong to user',
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateTaskMember = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    const taskID = Number(req.params.taskID);
+    const { userID } = req.user as User;
+
+    const taskRepository = getCustomRepository(TaskRepository);
+    const task = taskRepository.findTaskByMember(taskID, userID);
+
+    if (task) {
+        next();
+        return;
+    } else {
+        throw new NotAuthorizedException(403, 'Not Authorized Member');
     }
 };

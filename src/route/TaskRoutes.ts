@@ -2,7 +2,6 @@ import { Router } from 'express';
 import {
     assignTaskSchema,
     logTimeSchema,
-    projectSchema,
     taskIDSchema,
     taskSchema,
     updateTaskQuerySchema,
@@ -17,11 +16,12 @@ import {
     setTaskIncomplete,
     updateTaskInfo,
     validateAssignee,
-    validateTaskAction,
-    validateTaskBelongsToUser,
+    validateAssigneeOnCreate,
 } from '../controller/TaskController';
 import {
     authenticateProjectMember,
+    authenticateTaskAction,
+    authenticateTaskMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, {
@@ -31,15 +31,13 @@ import validateRequest, {
 
 const TaskRoutes = Router();
 
-//TODO: remove projectID from URI
 //Create Task
 TaskRoutes.post(
-    '/project/:projectID',
-    validateParams(projectSchema),
+    '',
     validateRequest(taskSchema),
     authenticateToken,
     authenticateProjectMember,
-    validateAssignee,
+    validateAssigneeOnCreate,
     createTask,
 );
 
@@ -48,38 +46,38 @@ TaskRoutes.delete(
     '/:taskID',
     validateParams(taskIDSchema),
     authenticateToken,
-    validateTaskAction,
+    authenticateTaskAction,
     deleteTask,
 );
 
 //Update Task, has query fields
 TaskRoutes.put(
-    '/task/:taskID',
+    '/:taskID',
     validateParams(taskIDSchema),
     validateQuery(updateTaskQuerySchema),
     validateRequest(updateTaskSchema),
     authenticateToken,
-    validateTaskAction,
+    authenticateTaskAction,
     updateTaskInfo,
 );
 
 //Assign Task
 TaskRoutes.put(
-    '/task/:taskID/assign',
+    '/:taskID/assign',
     validateParams(taskIDSchema),
     validateRequest(assignTaskSchema),
     authenticateToken,
-    validateTaskAction,
+    authenticateTaskAction,
     validateAssignee,
     assignTask,
 );
 
 //Set Task Completed
 TaskRoutes.put(
-    '/task/:taskID/complete',
+    '/:taskID/complete',
     validateParams(taskIDSchema),
     authenticateToken,
-    validateTaskBelongsToUser,
+    authenticateTaskAction,
     setTaskCompleted,
 );
 
@@ -88,7 +86,7 @@ TaskRoutes.put(
     '/task/:taskID/incomplete',
     validateParams(taskIDSchema),
     authenticateToken,
-    validateTaskBelongsToUser,
+    authenticateTaskAction,
     setTaskIncomplete,
 );
 
@@ -98,24 +96,26 @@ TaskRoutes.post(
     validateParams(taskIDSchema),
     validateRequest(logTimeSchema),
     authenticateToken,
-    validateTaskBelongsToUser,
+    authenticateTaskAction,
     startLog,
 );
 
+//Stop Task
 TaskRoutes.put(
     '/:taskID/stop',
     validateParams(taskIDSchema),
     validateRequest(logTimeSchema),
     authenticateToken,
-    validateTaskBelongsToUser,
+    authenticateTaskAction,
     stopLog,
 );
 
+//Get task logs
 TaskRoutes.get(
     '/:taskID/log',
     validateParams(taskIDSchema),
     authenticateToken,
-    validateTaskAction,
+    authenticateTaskMember,
     getLogs,
 );
 
