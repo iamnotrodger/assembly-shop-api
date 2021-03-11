@@ -73,8 +73,8 @@ app.use(passport.initialize());
 app.use('/api/auth', AuthenticationRoutes);
 app.use('/api/user', UserRoutes);
 app.use('/api/team', TeamRoutes);
-app.use('/api/', MemberRoutes);
 app.use('/api', ProjectRoutes);
+app.use('/api/member/', MemberRoutes);
 app.use('/api', TaskRoutes);
 app.use('/api', LogRoutes);
 

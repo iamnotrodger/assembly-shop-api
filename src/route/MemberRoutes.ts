@@ -15,7 +15,7 @@ import validateRequest, { validateParams } from '../middleware/validateRequest';
 const MemberRoutes = Router();
 
 MemberRoutes.get(
-    'team/:teamID/member',
+    '/team/:teamID',
     validateParams(teamIDSchema),
     authenticateToken,
     authenticateTeamMember,
@@ -23,7 +23,7 @@ MemberRoutes.get(
 );
 
 MemberRoutes.post(
-    'team/:teamID/member',
+    '/team/:teamID',
     validateParams(teamIDSchema),
     validateRequest(userSchema),
     authenticateToken,
@@ -32,7 +32,7 @@ MemberRoutes.post(
 );
 
 MemberRoutes.delete(
-    'team/:teamID/member/:userID',
+    '/:userID/team/:teamID/',
     validateParams(memberSchema),
     authenticateToken,
     authenticateTeamAdmin,
