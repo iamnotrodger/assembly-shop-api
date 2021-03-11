@@ -27,7 +27,7 @@ export const authenticateToken = (
     }
 };
 
-export const authenticateAdmin = async (
+export const authenticateTeamAdmin = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -51,7 +51,7 @@ export const authenticateAdmin = async (
     }
 };
 
-export const authenticateMember = async (
+export const authenticateTeamMember = async (
     req: Request,
     res: Response,
     next: NextFunction,

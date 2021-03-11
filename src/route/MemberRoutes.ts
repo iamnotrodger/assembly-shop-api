@@ -6,8 +6,8 @@ import {
     removeMember,
 } from '../controller/MemberController';
 import {
-    authenticateAdmin,
-    authenticateMember,
+    authenticateTeamAdmin,
+    authenticateTeamMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, { validateParams } from '../middleware/validateRequest';
@@ -15,27 +15,27 @@ import validateRequest, { validateParams } from '../middleware/validateRequest';
 const MemberRoutes = Router();
 
 MemberRoutes.get(
-    '/:teamID/member',
+    'team/:teamID/member',
     validateParams(teamIDSchema),
     authenticateToken,
-    authenticateMember,
+    authenticateTeamMember,
     getTeamMembers,
 );
 
 MemberRoutes.post(
-    '/:teamID/member',
+    'team/:teamID/member',
     validateParams(teamIDSchema),
     validateRequest(userSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateTeamAdmin,
     addMember,
 );
 
 MemberRoutes.delete(
-    '/:teamID/member/:userID',
+    'team/:teamID/member/:userID',
     validateParams(memberSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateTeamAdmin,
     removeMember,
 );
 

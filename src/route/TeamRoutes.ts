@@ -8,7 +8,7 @@ import {
     updateTeamName,
 } from '../controller/TeamController';
 import {
-    authenticateAdmin,
+    authenticateTeamAdmin,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, { validateParams } from '../middleware/validateRequest';
@@ -25,7 +25,7 @@ TeamRoutes.delete(
     '/:teamID',
     validateParams(teamIDSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateTeamAdmin,
     deleteTeam,
 );
 
@@ -34,7 +34,7 @@ TeamRoutes.put(
     validateParams(teamIDSchema),
     validateRequest(nameSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateTeamAdmin,
     updateTeamName,
 );
 

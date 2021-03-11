@@ -21,7 +21,7 @@ import {
     validateTaskBelongsToUser,
 } from '../controller/TaskController';
 import {
-    authenticateMember,
+    authenticateTeamMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, {
@@ -37,7 +37,7 @@ TaskRoutes.get(
     baseURI,
     validateParams(projectSchema),
     authenticateToken,
-    authenticateMember,
+    authenticateTeamMember,
     getTasks,
 );
 
@@ -47,7 +47,7 @@ TaskRoutes.post(
     validateParams(projectSchema),
     validateRequest(taskSchema),
     authenticateToken,
-    authenticateMember,
+    authenticateTeamMember,
     validateAssigneeByTeamID,
     createTask,
 );

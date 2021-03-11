@@ -9,8 +9,8 @@ import {
     updateProjectName,
 } from '../controller/ProjectController';
 import {
-    authenticateAdmin,
-    authenticateMember,
+    authenticateTeamAdmin,
+    authenticateTeamMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, { validateParams } from '../middleware/validateRequest';
@@ -26,7 +26,7 @@ ProjectRoutes.get(
     baseURI,
     validateParams(teamIDSchema),
     authenticateToken,
-    authenticateMember,
+    authenticateTeamMember,
     getTeamProjects,
 );
 
@@ -35,7 +35,7 @@ ProjectRoutes.post(
     baseURI,
     validateRequest(nameSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateTeamAdmin,
     createProject,
 );
 
@@ -44,7 +44,7 @@ ProjectRoutes.get(
     baseURI + '/:projectID',
     validateParams(projectSchema),
     authenticateToken,
-    authenticateMember,
+    authenticateTeamMember,
     getProject,
 );
 
@@ -53,7 +53,7 @@ ProjectRoutes.delete(
     baseURI + '/:projectID',
     validateParams(projectSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateTeamAdmin,
     deleteProject,
 );
 
@@ -63,7 +63,7 @@ ProjectRoutes.put(
     validateParams(projectSchema),
     validateRequest(nameSchema),
     authenticateToken,
-    authenticateAdmin,
+    authenticateTeamAdmin,
     updateProjectName,
 );
 
