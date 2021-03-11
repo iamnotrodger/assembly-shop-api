@@ -1,7 +1,13 @@
 import { Router } from 'express';
-import { memberSchema, teamIDSchema, userSchema } from '../config/joiSchemas';
+import {
+    memberSchema,
+    projectIDSchema,
+    teamIDSchema,
+    userSchema,
+} from '../config/joiSchemas';
 import {
     addMember,
+    getProjectMembers,
     getTeamMembers,
     removeMember,
 } from '../controller/MemberController';
@@ -20,6 +26,15 @@ MemberRoutes.get(
     authenticateToken,
     authenticateTeamMember,
     getTeamMembers,
+);
+
+MemberRoutes.get(
+    '/project/:projectID',
+    validateParams(projectIDSchema),
+    authenticateToken,
+    //TODO: add authentication to getting a project's member
+    // authenticateTeamMember,
+    getProjectMembers,
 );
 
 MemberRoutes.post(

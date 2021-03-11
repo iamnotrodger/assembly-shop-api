@@ -11,6 +11,15 @@ export default class MemberRepository extends Repository<Member> {
         });
     }
 
+    findByProjectId(projectID: number) {
+        return this.createQueryBuilder('member')
+            .innerJoinAndSelect('member.user', 'user')
+            .innerJoin('member.team', 'team')
+            .innerJoin('team.projects', 'project')
+            .where('project.project_id = :projectID', { projectID })
+            .getMany();
+    }
+
     /** Add team member and add the number of members of the team */
     add(teamID: number, userID: number) {
         return this.manager.transaction(async (transactionManager) => {

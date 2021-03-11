@@ -1,1 +1,6 @@
-export { addMember, getTeamMembers, removeMember } from './MemberController';
+export {
+    addMember,
+    getProjectMembers,
+    getTeamMembers,
+    removeMember,
+} from './MemberController';

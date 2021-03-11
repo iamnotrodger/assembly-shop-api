@@ -20,6 +20,23 @@ export const getTeamMembers = async (
     }
 };
 
+export const getProjectMembers = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const projectID = Number(req.params.projectID);
+
+        const memberRepository = getCustomRepository(MemberRepository);
+        const members = await memberRepository.findByProjectId(projectID);
+
+        res.status(200).json(members);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const addMember = async (
     req: Request,
     res: Response,
