@@ -81,4 +81,8 @@ export default class LogRepository extends Repository<Log> {
             return success;
         });
     }
+
+    findTask(logID: number) {
+        return this.findOne(logID, { relations: ['task'] });
+    }
 }

@@ -4,10 +4,11 @@ import {
     getTokenFromHeader,
     verifyAccessToken,
 } from '../controller/AuthenticationController/utils';
-import Member from '../entity/Member';
 import Team from '../entity/Team';
 import User from '../entity/User';
+import InvalidRequestException from '../exception/InvalidRequestException';
 import NotAuthorizedException from '../exception/NotAuthorizedException';
+import LogRepository from '../repository/LogRepository';
 import MemberRepository from '../repository/MemberRepository';
 import ProjectRepository from '../repository/ProjectRepository';
 import TaskRepository from '../repository/TaskRepository';
@@ -159,16 +160,50 @@ export const authenticateTaskMember = async (
     res: Response,
     next: NextFunction,
 ) => {
-    const taskID = Number(req.params.taskID);
-    const { userID } = req.user as User;
+    try {
+        const taskID = Number(req.params.taskID);
+        const { userID } = req.user as User;
 
-    const taskRepository = getCustomRepository(TaskRepository);
-    const task = taskRepository.findTaskByMember(taskID, userID);
+        const taskRepository = getCustomRepository(TaskRepository);
+        const task = taskRepository.findTaskByMember(taskID, userID);
 
-    if (task) {
-        next();
-        return;
-    } else {
-        throw new NotAuthorizedException(403, 'Not Authorized Member');
+        if (task) {
+            next();
+            return;
+        } else {
+            throw new NotAuthorizedException(403, 'Not Authorized Member');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateLogAction = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const logID = Number(req.params.logID);
+        const { userID } = req.user as User;
+
+        const logRepository = getCustomRepository(LogRepository);
+        const log = await logRepository.findTask(logID);
+
+        if (!log) throw new InvalidRequestException('Log does not exist');
+
+        const { task } = log;
+
+        if (task?.assigneeID === userID) {
+            next();
+            return;
+        } else {
+            throw new NotAuthorizedException(
+                403,
+                'Not Authorized Action: Task does not belong to user.',
+            );
+        }
+    } catch (error) {
+        next(error);
     }
 };
