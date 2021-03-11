@@ -9,13 +9,12 @@ import {
     deleteProject,
     getProject,
     getProjects,
-    getTeamProjects,
     updateProjectName,
 } from '../controller/ProjectController';
+import { getTasks } from '../controller/TaskController';
 import {
     authenticateProjectAdmin,
     authenticateProjectMember,
-    authenticateTeamMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, { validateParams } from '../middleware/validateRequest';
@@ -25,15 +24,7 @@ const ProjectRoutes = Router();
 //Get User's Projects
 ProjectRoutes.get('', authenticateToken, getProjects);
 
-//Get Team Projects
-ProjectRoutes.get(
-    '/team/:teamID',
-    validateParams(teamIDSchema),
-    authenticateToken,
-    authenticateTeamMember,
-    getTeamProjects,
-);
-
+//TODO: remove teamID from URI
 // Create Project
 ProjectRoutes.post(
     '/team/:teamID',
@@ -69,6 +60,15 @@ ProjectRoutes.put(
     authenticateToken,
     authenticateProjectAdmin,
     updateProjectName,
+);
+
+//Get Project Tasks
+ProjectRoutes.get(
+    '/:projectID/task',
+    validateParams(projectIDSchema),
+    authenticateToken,
+    authenticateProjectMember,
+    getTasks,
 );
 
 export default ProjectRoutes;

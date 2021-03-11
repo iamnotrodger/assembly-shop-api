@@ -88,8 +88,6 @@ export const deleteLog = async (
             );
         }
 
-        console.log(totalTime);
-
         res.status(200).json({
             message: `Deleted Log (${logID})`,
             totalTime,

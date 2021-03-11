@@ -1,27 +1,27 @@
 import { Router } from 'express';
 import {
     assignTaskSchema,
+    logTimeSchema,
     projectSchema,
     taskIDSchema,
     taskSchema,
     updateTaskQuerySchema,
     updateTaskSchema,
 } from '../config/joiSchemas';
+import { getLogs, startLog, stopLog } from '../controller/LogController';
 import {
     assignTask,
     createTask,
     deleteTask,
-    getTasks,
     setTaskCompleted,
     setTaskIncomplete,
     updateTaskInfo,
     validateAssignee,
-    validateAssigneeByTeamID,
     validateTaskAction,
     validateTaskBelongsToUser,
 } from '../controller/TaskController';
 import {
-    authenticateTeamMember,
+    authenticateProjectMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, {
@@ -30,31 +30,22 @@ import validateRequest, {
 } from '../middleware/validateRequest';
 
 const TaskRoutes = Router();
-const baseURI = '/team/:teamID/project/:projectID/task';
 
-//Get Task
-TaskRoutes.get(
-    baseURI,
-    validateParams(projectSchema),
-    authenticateToken,
-    authenticateTeamMember,
-    getTasks,
-);
-
+//TODO: remove projectID from URI
 //Create Task
 TaskRoutes.post(
-    baseURI,
+    '/project/:projectID',
     validateParams(projectSchema),
     validateRequest(taskSchema),
     authenticateToken,
-    authenticateTeamMember,
-    validateAssigneeByTeamID,
+    authenticateProjectMember,
+    validateAssignee,
     createTask,
 );
 
 //Delete Task
 TaskRoutes.delete(
-    '/task/:taskID',
+    '/:taskID',
     validateParams(taskIDSchema),
     authenticateToken,
     validateTaskAction,
@@ -99,6 +90,33 @@ TaskRoutes.put(
     authenticateToken,
     validateTaskBelongsToUser,
     setTaskIncomplete,
+);
+
+//Start Task
+TaskRoutes.post(
+    '/:taskID/start',
+    validateParams(taskIDSchema),
+    validateRequest(logTimeSchema),
+    authenticateToken,
+    validateTaskBelongsToUser,
+    startLog,
+);
+
+TaskRoutes.put(
+    '/:taskID/stop',
+    validateParams(taskIDSchema),
+    validateRequest(logTimeSchema),
+    authenticateToken,
+    validateTaskBelongsToUser,
+    stopLog,
+);
+
+TaskRoutes.get(
+    '/:taskID/log',
+    validateParams(taskIDSchema),
+    authenticateToken,
+    validateTaskAction,
+    getLogs,
 );
 
 export default TaskRoutes;

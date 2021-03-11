@@ -75,8 +75,8 @@ app.use('/api/user', UserRoutes);
 app.use('/api/team', TeamRoutes);
 app.use('/api/project', ProjectRoutes);
 app.use('/api/member/', MemberRoutes);
-app.use('/api', TaskRoutes);
-app.use('/api', LogRoutes);
+app.use('/api/task', TaskRoutes);
+app.use('/api/log', LogRoutes);
 
 //Error Handling
 app.use(notFound);

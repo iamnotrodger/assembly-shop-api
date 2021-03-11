@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { nameSchema, teamIDSchema, teamSchema } from '../config/joiSchemas';
+import { getTeamProjects } from '../controller/ProjectController';
 import {
     createTeam,
     deleteTeam,
@@ -9,6 +10,7 @@ import {
 } from '../controller/TeamController';
 import {
     authenticateTeamAdmin,
+    authenticateTeamMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, { validateParams } from '../middleware/validateRequest';
@@ -36,6 +38,15 @@ TeamRoutes.put(
     authenticateToken,
     authenticateTeamAdmin,
     updateTeamName,
+);
+
+//Get Team Projects
+TeamRoutes.get(
+    '/:teamID/project',
+    validateParams(teamIDSchema),
+    authenticateToken,
+    authenticateTeamMember,
+    getTeamProjects,
 );
 
 export default TeamRoutes;
