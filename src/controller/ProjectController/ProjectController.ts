@@ -4,6 +4,7 @@ import Project from '../../entity/Project';
 import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
 import NotFoundException from '../../exception/NotFoundException';
+import ProjectRepository from '../../repository/ProjectRepository';
 import TeamRepository from '../../repository/TeamRepository';
 
 export const getProject = async (
@@ -12,17 +13,17 @@ export const getProject = async (
     next: NextFunction,
 ) => {
     try {
-        const { teamID, projectID } = req.params;
+        const { projectID } = req.params;
 
         const projectRepository = getManager().getRepository(Project);
         const project = await projectRepository.findOne({
             relations: ['team'],
-            where: { teamID, projectID },
+            where: { projectID },
         });
 
         if (!project) {
             throw new NotFoundException(
-                `Team does not have Project (${projectID})`,
+                `Not Found: Project (${projectID}) does not exist`,
             );
         }
 
@@ -81,7 +82,7 @@ export const createProject = async (
         project.team = { teamID };
         project.name = name;
 
-        const projectRepository = getManager().getRepository(Project);
+        const projectRepository = getCustomRepository(ProjectRepository);
         await projectRepository.save(project);
 
         res.status(200).json({
@@ -101,7 +102,7 @@ export const deleteProject = async (
     try {
         const projectID = Number(req.params.projectID);
 
-        const projectRepository = getManager().getRepository(Project);
+        const projectRepository = getCustomRepository(ProjectRepository);
         const { affected } = await projectRepository.delete(projectID);
 
         if (affected == 0) {
@@ -127,7 +128,7 @@ export const updateProjectName = async (
         const projectID = Number(req.params.projectID);
         const { name } = req.body;
 
-        const projectRepository = getManager().getRepository(Project);
+        const projectRepository = getCustomRepository(ProjectRepository);
         const { affected } = await projectRepository.update(projectID, {
             name,
         });

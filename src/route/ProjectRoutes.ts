@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { nameSchema, projectSchema, teamIDSchema } from '../config/joiSchemas';
+import {
+    nameSchema,
+    projectIDSchema,
+    teamIDSchema,
+} from '../config/joiSchemas';
 import {
     createProject,
     deleteProject,
@@ -9,21 +13,21 @@ import {
     updateProjectName,
 } from '../controller/ProjectController';
 import {
-    authenticateTeamAdmin,
+    authenticateProjectAdmin,
+    authenticateProjectMember,
     authenticateTeamMember,
     authenticateToken,
 } from '../middleware/authentication';
 import validateRequest, { validateParams } from '../middleware/validateRequest';
 
 const ProjectRoutes = Router();
-const baseURI = '/team/:teamID/project';
 
 //Get User's Projects
-ProjectRoutes.get('/project', authenticateToken, getProjects);
+ProjectRoutes.get('', authenticateToken, getProjects);
 
 //Get Team Projects
 ProjectRoutes.get(
-    baseURI,
+    '/team/:teamID',
     validateParams(teamIDSchema),
     authenticateToken,
     authenticateTeamMember,
@@ -32,38 +36,38 @@ ProjectRoutes.get(
 
 // Create Project
 ProjectRoutes.post(
-    baseURI,
+    '/team/:teamID',
+    validateParams(teamIDSchema),
     validateRequest(nameSchema),
     authenticateToken,
-    authenticateTeamAdmin,
     createProject,
 );
 
 // Get Project
 ProjectRoutes.get(
-    baseURI + '/:projectID',
-    validateParams(projectSchema),
+    '/:projectID',
+    validateParams(projectIDSchema),
     authenticateToken,
-    authenticateTeamMember,
+    authenticateProjectMember,
     getProject,
 );
 
 //Delete Project
 ProjectRoutes.delete(
-    baseURI + '/:projectID',
-    validateParams(projectSchema),
+    '/:projectID',
+    validateParams(projectIDSchema),
     authenticateToken,
-    authenticateTeamAdmin,
+    authenticateProjectAdmin,
     deleteProject,
 );
 
 //Update Project's Name
 ProjectRoutes.put(
-    baseURI + '/:projectID/name',
-    validateParams(projectSchema),
+    '/:projectID/name',
+    validateParams(projectIDSchema),
     validateRequest(nameSchema),
     authenticateToken,
-    authenticateTeamAdmin,
+    authenticateProjectAdmin,
     updateProjectName,
 );
 

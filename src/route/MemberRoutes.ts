@@ -12,6 +12,7 @@ import {
     removeMember,
 } from '../controller/MemberController';
 import {
+    authenticateProjectMember,
     authenticateTeamAdmin,
     authenticateTeamMember,
     authenticateToken,
@@ -32,8 +33,7 @@ MemberRoutes.get(
     '/project/:projectID',
     validateParams(projectIDSchema),
     authenticateToken,
-    //TODO: add authentication to getting a project's member
-    // authenticateTeamMember,
+    authenticateProjectMember,
     getProjectMembers,
 );
 

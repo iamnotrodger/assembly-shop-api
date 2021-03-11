@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getManager } from 'typeorm';
+import { getCustomRepository, getManager } from 'typeorm';
 import {
     getTokenFromHeader,
     verifyAccessToken,
@@ -8,6 +8,8 @@ import Member from '../entity/Member';
 import Team from '../entity/Team';
 import User from '../entity/User';
 import NotAuthorizedException from '../exception/NotAuthorizedException';
+import MemberRepository from '../repository/MemberRepository';
+import ProjectRepository from '../repository/ProjectRepository';
 
 // Checks and validate access-token sent it with the request. Store User in req.user for the next middleware
 export const authenticateToken = (
@@ -59,10 +61,62 @@ export const authenticateTeamMember = async (
     try {
         const teamID = req.body.teamID | (req.params.teamID as any);
 
-        const memberRepository = getManager().getRepository(Member);
+        const memberRepository = getCustomRepository(MemberRepository);
         const member = await memberRepository.findOne({
             where: { team: { teamID }, user: req.user },
         });
+
+        if (member) {
+            next();
+        } else {
+            throw new NotAuthorizedException(403, 'Not Authorized Member');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateProjectAdmin = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { userID } = req.user as User;
+        const projectID = req.body.projectID | (req.params.projectID as any);
+
+        const projectRepository = getCustomRepository(ProjectRepository);
+        const project = await projectRepository.findProjectByAdminId(
+            projectID,
+            userID,
+        );
+
+        if (project) {
+            next();
+        } else {
+            throw new NotAuthorizedException(403, 'Not Authorized Admin');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const authenticateProjectMember = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { userID } = req.user as User;
+        const projectID = req.body.projectID | (req.params.projectID as any);
+
+        const memberRepository = getCustomRepository(MemberRepository);
+        const member = await memberRepository.findOneProjectMember(
+            projectID,
+            userID,
+        );
+
+        console.log(member);
 
         if (member) {
             next();

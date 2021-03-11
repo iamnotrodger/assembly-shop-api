@@ -20,6 +20,17 @@ export default class MemberRepository extends Repository<Member> {
             .getMany();
     }
 
+    findOneProjectMember(projectID: number, userID: number) {
+        return this.createQueryBuilder('member')
+            .innerJoin('member.team', 'team')
+            .innerJoin('team.projects', 'project')
+            .where(
+                'project.project_id = :projectID AND member.user_id = :userID',
+                { projectID, userID },
+            )
+            .getOne();
+    }
+
     /** Add team member and add the number of members of the team */
     add(teamID: number, userID: number) {
         return this.manager.transaction(async (transactionManager) => {
