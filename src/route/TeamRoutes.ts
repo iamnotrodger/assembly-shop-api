@@ -4,6 +4,7 @@ import { getTeamProjects } from '../controller/ProjectController';
 import {
     createTeam,
     deleteTeam,
+    getTeam,
     getTeams,
     getTeamsByAdmin,
     updateTeamName,
@@ -22,6 +23,14 @@ TeamRoutes.get('', authenticateToken, getTeams);
 TeamRoutes.post('', authenticateToken, validateRequest(teamSchema), createTeam);
 
 TeamRoutes.get('/admin', authenticateToken, getTeamsByAdmin);
+
+TeamRoutes.get(
+    '/:teamID',
+    validateParams(teamIDSchema),
+    authenticateToken,
+    authenticateTeamMember,
+    getTeam,
+);
 
 TeamRoutes.delete(
     '/:teamID',

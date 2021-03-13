@@ -3,7 +3,27 @@ import { getCustomRepository } from 'typeorm';
 import Team from '../../entity/Team';
 import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
+import NotFoundException from '../../exception/NotFoundException';
 import TeamRepository from '../../repository/TeamRepository';
+
+export const getTeam = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const teamID = Number(req.params.teamID);
+
+        const teamRepository = getCustomRepository(TeamRepository);
+        const team = await teamRepository.find({ teamID });
+
+        if (!team) throw new NotFoundException(`Team (${teamID}) Not Found`);
+
+        res.status(200).json(team);
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const getTeams = async (
     req: Request,
