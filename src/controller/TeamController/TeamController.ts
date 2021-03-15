@@ -15,7 +15,7 @@ export const getTeam = async (
         const teamID = Number(req.params.teamID);
 
         const teamRepository = getCustomRepository(TeamRepository);
-        const team = await teamRepository.find({ teamID });
+        const team = await teamRepository.findOne({ teamID });
 
         if (!team) throw new NotFoundException(`Team (${teamID}) Not Found`);
 
@@ -68,11 +68,10 @@ export const createTeam = async (
         const { userID } = req.user as User;
         const { name } = req.body;
         const members = req.body.members || [];
-        members.push({ userID });
+        members.push({ userID, admin: true });
 
         const team = new Team();
         team.name = name;
-        team.administratorID = userID;
         team.members = members;
         team.numMembers = members.length;
 

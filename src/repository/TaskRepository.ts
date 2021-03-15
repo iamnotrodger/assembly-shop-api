@@ -49,18 +49,4 @@ export default class TaskRepository extends Repository<Task> {
             })
             .getOne();
     }
-
-    findAssigneeOrAdmin(taskID: number, userID: number) {
-        return this.createQueryBuilder('task')
-            .innerJoin('task.project', 'project')
-            .innerJoin('project.team', 'team')
-            .where(
-                'task.task_id = :taskID AND (task.assignee = :userID OR team.administrator = :userID)',
-                {
-                    taskID,
-                    userID,
-                },
-            )
-            .getOne();
-    }
 }

@@ -6,7 +6,6 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import Member from './Member';
-import Team from './Team';
 
 @Entity()
 export default class User {
@@ -33,9 +32,6 @@ export default class User {
 
     @Column('text', { nullable: true })
     picture?: string;
-
-    @OneToMany(() => Team, (team) => team.administrator)
-    teams?: Team[];
 
     @OneToMany(() => Member, (member) => member.user)
     member?: Member;

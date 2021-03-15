@@ -1,4 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
+import { getAutomaticTypeDirectiveNames } from 'typescript';
 import Team from '../entity/Team';
 
 @EntityRepository(Team)
@@ -10,8 +11,13 @@ export default class TeamRepository extends Repository<Team> {
             .getMany();
     }
 
-    findTeamsByAdmin(administratorID: number) {
-        return this.find({ administratorID });
+    findTeamsByAdmin(userID: number) {
+        return this.createQueryBuilder('team')
+            .innerJoin('team.members', 'member')
+            .where('member.user_id = :userID AND member.admin = TRUE', {
+                userID,
+            })
+            .getMany();
     }
 
     findProjects(userID: number) {

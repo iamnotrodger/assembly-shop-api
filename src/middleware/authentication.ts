@@ -13,7 +13,7 @@ import MemberRepository from '../repository/MemberRepository';
 import ProjectRepository from '../repository/ProjectRepository';
 import TaskRepository from '../repository/TaskRepository';
 
-// Checks and validate access-token sent it with the request. Store User in req.user for the next middleware
+//** Checks and validate access-token sent it with the request. Store User in req.user for the next middleware */
 export const authenticateToken = (
     req: Request,
     res: Response,
@@ -40,12 +40,10 @@ export const authenticateTeamAdmin = async (
         const { userID } = req.user as User;
         const teamID = req.body.teamID | (req.params.teamID as any);
 
-        const teamRepository = getManager().getRepository(Team);
-        const team = await teamRepository.findOne({
-            where: { teamID: teamID, administratorID: userID },
-        });
+        const memberRepository = getCustomRepository(MemberRepository);
+        const member = await memberRepository.findTeamAdmin(teamID, userID);
 
-        if (team) {
+        if (member) {
             next();
         } else {
             throw new NotAuthorizedException(403, 'Not Authorized Admin');
@@ -61,12 +59,11 @@ export const authenticateTeamMember = async (
     next: NextFunction,
 ) => {
     try {
+        const { userID } = req.user as User;
         const teamID = req.body.teamID | (req.params.teamID as any);
 
         const memberRepository = getCustomRepository(MemberRepository);
-        const member = await memberRepository.findOne({
-            where: { team: { teamID }, user: req.user },
-        });
+        const member = await memberRepository.findOne({ teamID, userID });
 
         if (member) {
             next();
@@ -87,13 +84,13 @@ export const authenticateProjectAdmin = async (
         const { userID } = req.user as User;
         const projectID = req.body.projectID | (req.params.projectID as any);
 
-        const projectRepository = getCustomRepository(ProjectRepository);
-        const project = await projectRepository.findProjectByAdminId(
+        const memberRepository = getCustomRepository(MemberRepository);
+        const member = await memberRepository.findProjectAdmin(
             projectID,
             userID,
         );
 
-        if (project) {
+        if (member) {
             next();
         } else {
             throw new NotAuthorizedException(403, 'Not Authorized Admin');
@@ -139,22 +136,34 @@ export const authenticateTaskAction = async (
         const { userID } = req.user as User;
 
         const taskRepository = getCustomRepository(TaskRepository);
-        const task = await taskRepository.findAssigneeOrAdmin(taskID, userID);
+        const task = await taskRepository.findOne({ taskID });
 
-        if (task) {
+        if (!task) throw new InvalidRequestException('Task does not exist');
+
+        const { projectID, assigneeID } = task;
+
+        if (userID === assigneeID) {
             next();
             return;
+        }
+
+        const memberRepository = getCustomRepository(MemberRepository);
+        const member = await memberRepository.findProjectAdmin(
+            projectID!,
+            userID,
+        );
+
+        if (member) {
+            next();
         } else {
-            throw new NotAuthorizedException(
-                403,
-                'Not Authorized: Task does belong to user',
-            );
+            throw new NotAuthorizedException(403, 'Not Authorized Admin');
         }
     } catch (error) {
         next(error);
     }
 };
 
+//** Task request are authorized if the user making the request is either the assignee or a team admin    */
 export const authenticateTaskMember = async (
     req: Request,
     res: Response,
@@ -178,6 +187,7 @@ export const authenticateTaskMember = async (
     }
 };
 
+//** Log request are authorized if the user making the request is the assignee */
 export const authenticateLogAction = async (
     req: Request,
     res: Response,

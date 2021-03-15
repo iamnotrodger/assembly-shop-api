@@ -21,6 +21,9 @@ export default class Member {
     @Column({ name: 'team_id' })
     teamID?: number;
 
+    @Column('boolean', { default: false })
+    admin?: boolean;
+
     @ManyToOne(() => User, (user) => user.member, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user!: User;

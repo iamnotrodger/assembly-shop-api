@@ -4,37 +4,10 @@ import Team from '../entity/Team';
 
 @EntityRepository(Member)
 export default class MemberRepository extends Repository<Member> {
-    findByTeamId(teamID: number) {
-        return this.find({
-            relations: ['user'],
-            where: { teamID },
-        });
-    }
-
-    findByProjectId(projectID: number) {
-        return this.createQueryBuilder('member')
-            .innerJoinAndSelect('member.user', 'user')
-            .innerJoin('member.team', 'team')
-            .innerJoin('team.projects', 'project')
-            .where('project.project_id = :projectID', { projectID })
-            .getMany();
-    }
-
-    findOneProjectMember(projectID: number, userID: number) {
-        return this.createQueryBuilder('member')
-            .innerJoin('member.team', 'team')
-            .innerJoin('team.projects', 'project')
-            .where(
-                'project.project_id = :projectID AND member.user_id = :userID',
-                { projectID, userID },
-            )
-            .getOne();
-    }
-
     /** Add team member and add the number of members of the team */
-    add(teamID: number, userID: number) {
+    add(teamID: number, userID: number, admin: boolean = false) {
         return this.manager.transaction(async (transactionManager) => {
-            await transactionManager.save(Member, { teamID, userID });
+            await transactionManager.save(Member, { teamID, userID, admin });
             await transactionManager.update(Team, teamID, {
                 numMembers: () => `num_members + 1`,
             });
@@ -57,5 +30,48 @@ export default class MemberRepository extends Repository<Member> {
 
             return result;
         });
+    }
+
+    findByTeamId(teamID: number) {
+        return this.find({
+            relations: ['user'],
+            where: { teamID },
+        });
+    }
+
+    findByProjectId(projectID: number) {
+        return this.createQueryBuilder('member')
+            .innerJoinAndSelect('member.user', 'user')
+            .innerJoin('member.team', 'team')
+            .innerJoin('team.projects', 'project')
+            .where('project.project_id = :projectID', { projectID })
+            .getMany();
+    }
+
+    findTeamAdmin(teamID: number, userID: number) {
+        const admin = true;
+        return this.findOne({ teamID, userID, admin });
+    }
+
+    findProjectAdmin(projectID: number, userID: number) {
+        return this.createQueryBuilder('member')
+            .innerJoin('member.team', 'team')
+            .innerJoin('team.projects', 'project')
+            .where(
+                'project.project_id = :projectID AND member.user_id = :userID AND member.admin = TRUE',
+                { projectID, userID },
+            )
+            .getOne();
+    }
+
+    findOneProjectMember(projectID: number, userID: number) {
+        return this.createQueryBuilder('member')
+            .innerJoin('member.team', 'team')
+            .innerJoin('team.projects', 'project')
+            .where(
+                'project.project_id = :projectID AND member.user_id = :userID',
+                { projectID, userID },
+            )
+            .getOne();
     }
 }
