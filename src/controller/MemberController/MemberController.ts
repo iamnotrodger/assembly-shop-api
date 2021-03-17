@@ -44,7 +44,7 @@ export const addMember = async (
 ) => {
     try {
         const teamID = Number(req.params.teamID);
-        const { userID } = req.body;
+        const userID = Number(req.params.userID);
 
         const memberRepository = getCustomRepository(MemberRepository);
         await memberRepository.add(teamID, userID);
@@ -55,7 +55,7 @@ export const addMember = async (
     } catch (error) {
         if (error.code == '23505' || error.code == '23503') {
             error = new InvalidRequestException(
-                `Unable to add User (${req.body.userID}) to Team (${req.params.teamID}). This may be due to the User already being in the team or the User/Team does not exist.`,
+                `Unable to add User (${req.params.userID}) to Team (${req.params.teamID}). This may be due to the User already being in the team or the User/Team does not exist.`,
             );
         }
         next(error);

@@ -3,7 +3,6 @@ import {
     memberSchema,
     projectIDSchema,
     teamIDSchema,
-    userSchema,
 } from '../config/joiSchemas';
 import {
     addMember,
@@ -17,7 +16,7 @@ import {
     authenticateTeamMember,
     authenticateToken,
 } from '../middleware/authentication';
-import validateRequest, { validateParams } from '../middleware/validateRequest';
+import { validateParams } from '../middleware/validateRequest';
 
 const MemberRoutes = Router();
 
@@ -38,9 +37,8 @@ MemberRoutes.get(
 );
 
 MemberRoutes.post(
-    '/team/:teamID',
-    validateParams(teamIDSchema),
-    validateRequest(userSchema),
+    '/:userID/team/:teamID/',
+    validateParams(memberSchema),
     authenticateToken,
     authenticateTeamAdmin,
     addMember,
