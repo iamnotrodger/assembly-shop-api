@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
+import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
 import MemberRepository from '../../repository/MemberRepository';
 
@@ -70,6 +71,32 @@ export const removeMember = async (
     try {
         const teamID = Number(req.params.teamID);
         const userID = Number(req.params.userID);
+
+        const memberRepository = getCustomRepository(MemberRepository);
+        const { affected } = await memberRepository.subtract(teamID, userID);
+
+        if (affected == 0) {
+            throw new InvalidRequestException(
+                `Invalid Request: User (${userID}) does not exist or is not a member of the Team.`,
+            );
+        }
+
+        res.status(200).json({
+            message: `User (${userID}) has been removed to Team (${teamID})`,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const quitTeam = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const teamID = Number(req.params.teamID);
+        const { userID } = req.user as User;
 
         const memberRepository = getCustomRepository(MemberRepository);
         const { affected } = await memberRepository.subtract(teamID, userID);

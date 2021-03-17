@@ -8,6 +8,7 @@ import {
     addMember,
     getProjectMembers,
     getTeamMembers,
+    quitTeam,
     removeMember,
 } from '../controller/MemberController';
 import {
@@ -26,6 +27,13 @@ MemberRoutes.get(
     authenticateToken,
     authenticateTeamMember,
     getTeamMembers,
+);
+
+MemberRoutes.delete(
+    '/team/:teamID',
+    validateParams(teamIDSchema),
+    authenticateToken,
+    quitTeam,
 );
 
 MemberRoutes.get(

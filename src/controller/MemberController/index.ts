@@ -3,4 +3,5 @@ export {
     getProjectMembers,
     getTeamMembers,
     removeMember,
+    quitTeam,
 } from './MemberController';
