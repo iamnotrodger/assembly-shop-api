@@ -37,6 +37,9 @@ createConnection({
     migrations: [join(__dirname, '/migration/*')],
     synchronize: true,
     logging: false,
+    extra: {
+        ssl: true,
+    },
 })
     .then(() => {
         console.log('Connected to Postgres');
