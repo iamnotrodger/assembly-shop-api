@@ -14,6 +14,7 @@ import './config/passportConfig';
 
 //Routes
 import AuthenticationRoutes from './route/AuthenticationRoutes';
+import HealthRoutes from './route/HealthRoutes';
 import UserRoutes from './route/UserRoutes';
 import TeamRoutes from './route/TeamRoutes';
 import ProjectRoutes from './route/ProjectRoutes';
@@ -76,6 +77,7 @@ app.use(helmet());
 app.use(passport.initialize());
 
 //Routes
+app.use('/api/health', HealthRoutes);
 app.use('/api/auth', AuthenticationRoutes);
 app.use('/api/user', UserRoutes);
 app.use('/api/team', TeamRoutes);

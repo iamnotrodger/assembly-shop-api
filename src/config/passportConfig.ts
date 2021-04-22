@@ -12,7 +12,6 @@ import { getManager } from 'typeorm';
 import User from '../entity/User';
 
 const absoluteURL: string = process.env.URL || '';
-console.log('url: ', absoluteURL);
 
 passport.use(
     new GoogleStrategy(
