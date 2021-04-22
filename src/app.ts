@@ -71,7 +71,7 @@ const options: cors.CorsOptions = {
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 app.use(cors(options));
 app.use(helmet());
 app.use(passport.initialize());

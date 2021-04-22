@@ -23,6 +23,8 @@ export const assignRefreshToken = async (
 
         const refreshToken = createRefreshToken(payload);
         res.cookie('refresh_token', refreshToken, {
+            domain: process.env.COOKIE_DOMAIN,
+            secure: true,
             httpOnly: true,
         });
 
