@@ -47,7 +47,9 @@ export const deaunthenticateRefreshToken = async (
             throw new NotAuthorizedException();
         }
 
-        res.clearCookie('refresh_token');
+        res.clearCookie('refresh_token', {
+            domain: process.env.COOKIE_DOMAIN,
+        });
         res.status(200).send('Token Unauthenticated');
     } catch (err) {
         next(err);
