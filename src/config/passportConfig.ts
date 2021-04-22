@@ -11,7 +11,8 @@ import {
 import { getManager } from 'typeorm';
 import User from '../entity/User';
 
-const absoluteURL: string = process.env.URL ? process.env.URL : '';
+const absoluteURL: string = process.env.URL || '';
+console.log('url: ', absoluteURL);
 
 passport.use(
     new GoogleStrategy(
@@ -72,7 +73,6 @@ const findOrCreateUser = async (profile: Profile) => {
         user.picture = photos![0].value;
 
         await userRepository.save(user);
-        console.log('created user: ', user);
     }
 
     return user;
