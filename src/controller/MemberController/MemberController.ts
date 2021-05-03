@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
+import Member from '../../entity/Member';
 import User from '../../entity/User';
 import InvalidRequestException from '../../exception/InvalidRequestException';
 import MemberRepository from '../../repository/MemberRepository';
@@ -44,15 +45,15 @@ export const addMember = async (
     next: NextFunction,
 ) => {
     try {
-        const teamID = Number(req.params.teamID);
-        const userID = Number(req.params.userID);
+        const member = new Member();
+        member.teamID = Number(req.params.teamID);
+        member.userID = Number(req.params.userID);
+        member.admin = false;
 
         const memberRepository = getCustomRepository(MemberRepository);
-        await memberRepository.add(teamID, userID);
+        await memberRepository.add(member);
 
-        res.status(200).json({
-            message: `User (${userID}) has been added to Team (${teamID})`,
-        });
+        res.status(200).json(member);
     } catch (error) {
         if (error.code == '23505' || error.code == '23503') {
             error = new InvalidRequestException(
@@ -69,8 +70,7 @@ export const removeMember = async (
     next: NextFunction,
 ) => {
     try {
-        const teamID = Number(req.params.teamID);
-        const userID = Number(req.params.userID);
+        const { teamID, userID } = req.params;
 
         const memberRepository = getCustomRepository(MemberRepository);
         const { affected } = await memberRepository.subtract(teamID, userID);

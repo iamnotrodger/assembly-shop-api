@@ -5,17 +5,17 @@ import Team from '../entity/Team';
 @EntityRepository(Member)
 export default class MemberRepository extends Repository<Member> {
     /** Add team member and add the number of members of the team */
-    add(teamID: number, userID: number, admin: boolean = false) {
+    add(member: Member) {
         return this.manager.transaction(async (transactionManager) => {
-            await transactionManager.save(Member, { teamID, userID, admin });
-            await transactionManager.update(Team, teamID, {
+            await transactionManager.save(member);
+            await transactionManager.update(Team, member.teamID, {
                 numMembers: () => `num_members + 1`,
             });
         });
     }
 
     /** Remove team member and subtracts the number of members of the team */
-    subtract(teamID: number, userID: number) {
+    subtract(teamID: number | string, userID: number | string) {
         return this.manager.transaction(async (transactionManager) => {
             const result = await transactionManager.delete(Member, {
                 teamID,
@@ -64,7 +64,18 @@ export default class MemberRepository extends Repository<Member> {
             .getOne();
     }
 
-    findOneProjectMember(projectID: number, userID: number) {
+    findOneProjectMember(projectID: number, memberID: number) {
+        return this.createQueryBuilder('member')
+            .innerJoin('member.team', 'team')
+            .innerJoin('team.projects', 'project')
+            .where(
+                'project.project_id = :projectID AND member.memberID = :memberID',
+                { projectID, memberID },
+            )
+            .getOne();
+    }
+
+    findOneProjectMemberByUser(projectID: number, userID: number) {
         return this.createQueryBuilder('member')
             .innerJoin('member.team', 'team')
             .innerJoin('team.projects', 'project')

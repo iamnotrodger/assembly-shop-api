@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
-    assignTaskSchema,
     logTimeSchema,
+    taskAssigneeSchema,
     taskIDSchema,
     taskSchema,
     updateTaskQuerySchema,
@@ -65,7 +65,7 @@ TaskRoutes.put(
 TaskRoutes.put(
     '/:taskID/assign',
     validateParams(taskIDSchema),
-    validateRequest(assignTaskSchema),
+    validateRequest(taskAssigneeSchema),
     authenticateToken,
     authenticateTaskAction,
     validateAssignee,

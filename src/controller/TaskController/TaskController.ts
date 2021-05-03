@@ -15,7 +15,7 @@ export const getTasks = async (
 
         const taskRepository = getCustomRepository(TaskRepository);
         const tasks = await taskRepository.find({
-            relations: ['assignee', 'activeLog'],
+            relations: ['assignee', 'assignee.user', 'activeLog'],
             where: { project: { projectID } },
             order: { taskID: 'DESC' },
         });
@@ -45,10 +45,7 @@ export const createTask = async (
         const taskRepository = getCustomRepository(TaskRepository);
         await taskRepository.save(task);
 
-        res.status(200).json({
-            message: 'Task Created',
-            task,
-        });
+        res.status(200).json(task);
     } catch (error) {
         if (error.code == '23503') {
             error = new InvalidRequestException(
@@ -119,10 +116,12 @@ export const assignTask = async (
 ) => {
     try {
         const taskID = Number(req.params.taskID);
-        const { assignee } = req.body;
+        const assignee = req.body;
 
         const taskRepository = getCustomRepository(TaskRepository);
-        const { affected } = await taskRepository.update(taskID, { assignee });
+        const { affected } = await taskRepository.update(taskID, {
+            assignee,
+        });
 
         if (affected == 0) {
             throw new InvalidRequestException(
@@ -131,7 +130,7 @@ export const assignTask = async (
         }
 
         res.status(200).json({
-            message: `Task (${taskID}) assigned to User (${assignee.userID})`,
+            message: `Task (${taskID}) assigned to Member (${assignee.memberID})`,
         });
     } catch (error) {
         if (error.code == '23503') {
@@ -203,23 +202,16 @@ export const validateAssignee = async (
 ) => {
     try {
         const taskID = Number(req.params.taskID);
-        const { assignee } = req.body;
-
-        if (!assignee) {
-            next();
-            return;
-        }
-
-        const { userID } = assignee;
+        const { memberID } = req.body;
 
         const taskRepository = getCustomRepository(TaskRepository);
-        const task = await taskRepository.findTaskByMember(taskID, userID);
+        const task = await taskRepository.findTaskByMember(taskID, memberID);
 
         if (task) {
             next();
         } else {
             throw new InvalidRequestException(
-                `Invalid Request: Assignee ${userID} is not a member of the Project.`,
+                `Invalid Request: Unable to assign Task. User with memberID ${memberID} is not a member of the Project.`,
             );
         }
     } catch (error) {
@@ -240,19 +232,19 @@ export const validateAssigneeOnCreate = async (
             return;
         }
 
-        const { userID } = assignee;
+        const { memberID } = assignee;
 
         const memberRepository = getCustomRepository(MemberRepository);
         const member = await memberRepository.findOneProjectMember(
             projectID,
-            userID,
+            memberID,
         );
 
         if (member) {
             next();
         } else {
             throw new InvalidRequestException(
-                `Invalid Request: Assignee ${userID} is not a member of the Project.`,
+                'Invalid Request: Task Assignee is not a member of the project.',
             );
         }
     } catch (error) {

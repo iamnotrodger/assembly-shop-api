@@ -1,16 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
-import { getCustomRepository, getManager } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 import {
     getTokenFromHeader,
     verifyAccessToken,
 } from '../controller/AuthenticationController/utils';
-import Team from '../entity/Team';
 import User from '../entity/User';
 import InvalidRequestException from '../exception/InvalidRequestException';
 import NotAuthorizedException from '../exception/NotAuthorizedException';
 import LogRepository from '../repository/LogRepository';
 import MemberRepository from '../repository/MemberRepository';
-import ProjectRepository from '../repository/ProjectRepository';
 import TaskRepository from '../repository/TaskRepository';
 
 //** Checks and validate access-token sent it with the request. Store User in req.user for the next middleware */
@@ -110,7 +108,7 @@ export const authenticateProjectMember = async (
         const projectID = req.body.projectID | (req.params.projectID as any);
 
         const memberRepository = getCustomRepository(MemberRepository);
-        const member = await memberRepository.findOneProjectMember(
+        const member = await memberRepository.findOneProjectMemberByUser(
             projectID,
             userID,
         );
@@ -200,11 +198,11 @@ export const authenticateLogAction = async (
         const logRepository = getCustomRepository(LogRepository);
         const log = await logRepository.findTask(logID);
 
-        if (!log) throw new InvalidRequestException('Log does not exist');
+        if (!log) throw new NotAuthorizedException(404, 'Log does not exist');
 
         const { task } = log;
 
-        if (task!.assigneeID === userID) {
+        if (task && task.assignee && task.assignee.userID == userID) {
             next();
             return;
         } else {

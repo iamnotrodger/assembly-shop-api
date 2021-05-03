@@ -45,19 +45,19 @@ export const projectSchema = Joi.object().keys({
 
 // Task Schemas
 
+export const taskAssigneeSchema = Joi.object().keys({
+    memberID: Joi.number().required(),
+});
+
 export const taskSchema = Joi.object().keys({
     projectID: Joi.number().required(),
     title: Joi.string().required(),
     description: Joi.string().allow(null, ''),
-    assignee: userSchema.allow(null),
+    assignee: taskAssigneeSchema.allow(null),
 });
 
 export const taskIDSchema = Joi.object().keys({
     taskID: Joi.number().required(),
-});
-
-export const assignTaskSchema = Joi.object().keys({
-    assignee: userSchema.required(),
 });
 
 export const updateTaskQuerySchema = Joi.object().keys({
