@@ -35,7 +35,7 @@ AuthenticationRoutes.get(
     '/facebook',
     passport.authenticate('facebook', {
         session: false,
-        scope: ['profile', 'email'],
+        scope: ['email'],
     }),
 );
 
