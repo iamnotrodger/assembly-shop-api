@@ -9,8 +9,8 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import Log from './Log';
+import Member from './Member';
 import Project from './Project';
-import User from './User';
 
 @Entity()
 export default class Task {
@@ -35,9 +35,9 @@ export default class Task {
     @Column({ name: 'project_id' })
     projectID?: number;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => Member, { nullable: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'assignee' })
-    assignee?: User;
+    assignee?: Member;
 
     @OneToOne(() => Log, { nullable: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'active_log' })

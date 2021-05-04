@@ -38,14 +38,14 @@ export default class TaskRepository extends Repository<Task> {
     }
 
     //* finds the task if the user is a member of the project */
-    findTaskByMember(taskID: number, userID: number) {
+    findTaskByMember(taskID: number, memberID: number) {
         return this.createQueryBuilder('task')
             .innerJoin('task.project', 'project')
             .innerJoin('project.team', 'team')
             .innerJoin('team.members', 'member')
-            .where('task.task_id = :taskID AND member.user_id = :userID', {
+            .where('task.task_id = :taskID AND member.memberID = :memberID', {
                 taskID,
-                userID,
+                memberID,
             })
             .getOne();
     }

@@ -83,6 +83,6 @@ export default class LogRepository extends Repository<Log> {
     }
 
     findTask(logID: number) {
-        return this.findOne(logID, { relations: ['task'] });
+        return this.findOne(logID, { relations: ['task', 'task.assignee'] });
     }
 }
