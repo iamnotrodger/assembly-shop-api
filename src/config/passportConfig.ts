@@ -41,7 +41,8 @@ passport.use(
         {
             clientID: process.env.FACEBOOK_APP_ID!,
             clientSecret: process.env.FACEBOOK_APP_SECRET!,
-            callbackURL: absoluteURL + 'api/auth/facebook/callback',
+            callbackURL: absoluteURL + '/api/auth/facebook/callback',
+            profileFields: ['id', 'emails', 'name', 'photos', 'locale'],
         },
         async (accessToken, refreshToken, profile: FacebookProfile, done) => {
             try {
@@ -62,14 +63,18 @@ const findOrCreateUser = async (profile: Profile) => {
 
     if (!user) {
         user = new User();
-        const email = emails![0].value!;
+        const email = emails && emails[0].value;
+        const picture = photos && photos[0].value;
+        const givenName = name && name.givenName;
+        const familyName = name && name.familyName;
+
         user.email = email;
         user.providerID = id;
         user.provider = provider;
         user.name = displayName;
-        user.givenName = name!.givenName;
-        user.familyName = name!.familyName;
-        user.picture = photos![0].value;
+        user.givenName = givenName;
+        user.familyName = familyName;
+        user.picture = picture;
 
         await userRepository.save(user);
     }
